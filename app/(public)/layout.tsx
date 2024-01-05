@@ -19,8 +19,10 @@ export default function DefaultLayout({
                 {/*  Site header */}
                 <Header />
 
-                <main className='gap flex flex-1 flex-col py-12 [&>*:first-child]:scroll-mt-16'>
-                    <Container className={''}>{children}</Container>
+                <main className='gap flex flex-1 flex-col [&>*:first-child]:scroll-mt-16 h-[100%]'>
+                    <Container className={'min-h-full px-0 md:px-0 xl:px-0'}>
+                        {children}
+                    </Container>
                 </main>
             </div>
         </div>

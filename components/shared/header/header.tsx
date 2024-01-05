@@ -1,5 +1,6 @@
 'use client';
 
+import { DownloadButton } from '@/components/downloadButton';
 import { Button } from '@/components/ui/button';
 import { useAppProvider } from '@/providers/app-provider';
 import { Menu } from 'lucide-react';
@@ -74,6 +75,7 @@ export default function Header() {
                         {/*  Divider */}
                         <hr className='w-px h-6 bg-slate-200 dark:bg-slate-700 border-none' />
                         {/* <DropdownProfile align='right' /> */}
+                        <DownloadButton />
                     </div>
                 </div>
             </div>

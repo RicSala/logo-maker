@@ -14,6 +14,7 @@ import { Newsletter } from '@/components/marketing/newsletter';
 import CtaWithSocial from '@/components/marketing/cta-with-social';
 import { auth } from '@/auth';
 import { LoginButton } from '@/components/auth/login-button';
+import IconSelector from '@/components/icon-selector';
 
 export default async function Home() {
     const session = await auth();

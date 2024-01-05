@@ -69,8 +69,6 @@
 @layer base {
     * {
         @apply border-border;
-        /* TODO: Check this preset with Comeau */
-        @apply select-none;
     }
     body {
         @apply bg-background text-foreground;
