@@ -35,18 +35,18 @@ export function IconSettings({}) {
             <IconSelectorModal />
             <SliderWithLabel
                 key={'size'}
-                label='Size'
+                label='Tamaño'
                 value={iconSize}
                 onChange={setIconSize}
             />
             <SliderWithLabel
                 key={'rotation'}
-                label='Rotate'
+                label='Rotar icono'
                 value={iconRotation}
                 onChange={setIconRotation}
             />
             <SliderWithLabel
-                label='Border width'
+                label='Grosor de trazo'
                 value={strokeWidth}
                 onChange={setStrokeWidth}
                 min={0.2}
@@ -60,7 +60,7 @@ export function IconSettings({}) {
             />
             <div className='flex items-center space-x-2'>
                 <Switch
-                    id='airplane-mode'
+                    id='fill-toggle'
                     checked={isFilled}
                     onCheckedChange={setIsFilled}
                 />

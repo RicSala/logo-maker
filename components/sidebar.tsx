@@ -12,15 +12,17 @@ export function Sidebar({ className, ...props }: SidebarProps) {
     return (
         <div
             className={cn(
-                `flex flex-col border-r-2 border-l-2 border-border h-full p-2 gap-6`,
+                `flex flex-col border-r-2 border-l-2 border-border h-full p-2 gap-6
+                w-80
+                `,
                 className
             )}
             {...props}
         >
             <Tabs defaultValue='icon' className='w-full'>
                 <TabsList className='w-full justify-around'>
-                    <TabsTrigger value='icon'>Icon </TabsTrigger>
-                    <TabsTrigger value='background'>BackGround </TabsTrigger>
+                    <TabsTrigger value='icon'>Icono</TabsTrigger>
+                    <TabsTrigger value='background'>Fondo</TabsTrigger>
                 </TabsList>
                 <TabsContent value='icon'>
                     <IconSettings />

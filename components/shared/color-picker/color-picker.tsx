@@ -11,7 +11,6 @@ import ColorHue from '@uiw/react-color-hue';
 import HexInput from '@uiw/react-color-editable-input';
 import RGBAInput from '@uiw/react-color-editable-input-rgba';
 
-import { useState } from 'react';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@radix-ui/react-dropdown-menu';
 
@@ -63,7 +62,7 @@ export function ColorPicker({
                     className='h-full mx-2 text-black'
                 />
                 <RGBAInput
-                    className='w-80'
+                    className='w-60'
                     hsva={hexToHsva(value)}
                     onChange={(color) => {
                         console.log(color);
@@ -90,12 +89,12 @@ export function ColorPicker({
                     setValue(newColor);
                 }}
             />
-            <ColorSlider
+            {/* <ColorSlider
                 color={value}
                 onChange={(color) => {
                     setValue(color.hex);
                 }}
-            />
+            /> */}
             <Circle
                 colors={['#F44E3B', '#FE9200', '#FCDC00', '#DBDF00']}
                 color={value}

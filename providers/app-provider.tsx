@@ -32,6 +32,8 @@ interface ContextProps {
     logoRef: React.RefObject<HTMLDivElement> | null;
     logoIcon: string;
     setLogoIcon: Dispatch<SetStateAction<string>>;
+    isGradientBackground: boolean;
+    setIsGradientBackground: Dispatch<SetStateAction<boolean>>;
 }
 
 // BOILER: export the context in the boilerplate
@@ -57,6 +59,8 @@ export const AppContext = createContext<ContextProps>({
     logoRef: null,
     logoIcon: '',
     setLogoIcon: (): string => '',
+    isGradientBackground: false,
+    setIsGradientBackground: (): boolean => false,
 });
 
 export default function AppProvider({
@@ -72,9 +76,13 @@ export default function AppProvider({
     const [fillColor, setFillColor] = useState<string>('#000000');
     const [isFilled, setIsFilled] = useState<boolean>(false);
     const [borderRadius, setBorderRadius] = useState<number>(0);
-    const [backgroundColor, setBackgroundColor] = useState<string>('#000000');
+    const [backgroundColor, setBackgroundColor] = useState<string>(
+        'linear-gradient(90deg, rgba(96,93,93,1) 0%, rgba(255,255,255,1) 100%)'
+    );
     const logoRef = useRef<HTMLDivElement>(null);
     const [logoIcon, setLogoIcon] = useState<string>('chef-hat');
+    const [isGradientBackground, setIsGradientBackground] =
+        useState<boolean>(false);
 
     return (
         <AppContext.Provider
@@ -100,6 +108,8 @@ export default function AppProvider({
                 logoRef,
                 logoIcon,
                 setLogoIcon,
+                isGradientBackground,
+                setIsGradientBackground,
             }}
         >
             {children}

@@ -7,6 +7,7 @@ import { AppContext } from '@/providers/app-provider';
 import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 import { set } from 'zod';
+import { GradientColorPicker } from './shared/color-picker/gradient-color-picker';
 
 export function BackgroundSettings({}) {
     const {
@@ -17,7 +18,7 @@ export function BackgroundSettings({}) {
     } = useContext(AppContext);
 
     return (
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-8 mt-8'>
             <SliderWithLabel
                 key={'rounded'}
                 label='Redondeo esquinas'
@@ -26,11 +27,13 @@ export function BackgroundSettings({}) {
                 min={0}
                 max={200}
             />
-            <ColorPicker
+            {/* <ColorPicker
                 label={'Color de línea'}
                 value={backgroundColor}
                 setValue={setBackgroundColor}
-            />
+            /> */}
+
+            <GradientColorPicker />
         </div>
     );
 }

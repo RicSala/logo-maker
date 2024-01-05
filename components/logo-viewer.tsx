@@ -6,11 +6,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from './ui/tooltip';
-import { BeerIcon, ChefHat, Download, Menu } from 'lucide-react';
 import { useContext, useRef } from 'react';
 import { AppContext } from '@/providers/app-provider';
-import { toPng } from 'html-to-image';
-import { Button } from './ui/button';
 import IconComp from './lucide-icon';
 
 type LogoViewerProps = {
@@ -49,6 +46,7 @@ export const WorkBench = ({ className }: WorkBenchProps) => {
         borderRadius,
         logoRef,
         logoIcon,
+        isGradientBackground,
     } = useContext(AppContext);
 
     return (
@@ -75,7 +73,12 @@ export const WorkBench = ({ className }: WorkBenchProps) => {
                             >
                                 <div
                                     style={{
-                                        backgroundColor: `${backgroundColor}`,
+                                        backgroundImage: isGradientBackground
+                                            ? backgroundColor
+                                            : undefined,
+                                        backgroundColor: !isGradientBackground
+                                            ? backgroundColor
+                                            : undefined,
                                         borderRadius: `${borderRadius}px`,
                                     }}
                                     className={`
