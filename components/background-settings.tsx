@@ -27,12 +27,6 @@ export function BackgroundSettings({}) {
                 min={0}
                 max={200}
             />
-            {/* <ColorPicker
-                label={'Color de línea'}
-                value={backgroundColor}
-                setValue={setBackgroundColor}
-            /> */}
-
             <GradientColorPicker />
         </div>
     );

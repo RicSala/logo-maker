@@ -82,7 +82,7 @@ export default function AppProvider({
     const logoRef = useRef<HTMLDivElement>(null);
     const [logoIcon, setLogoIcon] = useState<string>('chef-hat');
     const [isGradientBackground, setIsGradientBackground] =
-        useState<boolean>(false);
+        useState<boolean>(true);
 
     return (
         <AppContext.Provider
