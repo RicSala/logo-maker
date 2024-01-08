@@ -15,19 +15,13 @@ import { IconSelectorModal } from './icon-selector-modal';
 
 export function IconSettings({}) {
     const {
-        iconSize,
+        logo,
         setIconSize,
-        iconRotation,
         setIconRotation,
-        strokeWidth,
         setStrokeWidth,
-        strokeColor,
         setStrokeColor,
-        fillColor,
         setFillColor,
-        isFilled,
         setIsFilled,
-        logoIcon,
     } = useContext(AppContext);
 
     return (
@@ -36,18 +30,18 @@ export function IconSettings({}) {
             <SliderWithLabel
                 key={'size'}
                 label='Tamaño'
-                value={iconSize}
+                value={logo.size}
                 onChange={setIconSize}
             />
             <SliderWithLabel
                 key={'rotation'}
                 label='Rotar icono'
-                value={iconRotation}
+                value={logo.rotation}
                 onChange={setIconRotation}
             />
             <SliderWithLabel
                 label='Grosor de trazo'
-                value={strokeWidth}
+                value={logo.strokeWidth}
                 onChange={setStrokeWidth}
                 min={0.2}
                 max={5}
@@ -55,21 +49,21 @@ export function IconSettings({}) {
             />
             <ColorPicker
                 label={'Color de línea'}
-                value={strokeColor}
+                value={logo.strokeColor}
                 setValue={setStrokeColor}
             />
             <div className='flex items-center space-x-2'>
                 <Switch
                     id='fill-toggle'
-                    checked={isFilled}
+                    checked={logo.isFilled}
                     onCheckedChange={setIsFilled}
                 />
                 <Label htmlFor='airplane-mode'>Rellenar icono</Label>
             </div>
             <ColorPicker
-                disabled={!isFilled}
+                disabled={!logo.isFilled}
                 label={'Color de relleno'}
-                value={fillColor}
+                value={logo.fillColor}
                 setValue={setFillColor}
             />
         </div>

@@ -1,66 +1,198 @@
 'use client';
-
 import {
     createContext,
     Dispatch,
     SetStateAction,
+    useCallback,
     useContext,
+    useReducer,
     useRef,
     useState,
 } from 'react';
 
 interface ContextProps {
     sidebarOpen: boolean;
-    setSidebarOpen: Dispatch<SetStateAction<boolean>>; //REVIEW: Why this is type Dispatch<SetStateAction<boolean>>?
-    iconSize: number;
-    setIconSize: Dispatch<SetStateAction<number>>;
-    iconRotation: number;
-    setIconRotation: Dispatch<SetStateAction<number>>;
-    strokeWidth: number;
-    setStrokeWidth: Dispatch<SetStateAction<number>>;
-    strokeColor: string;
-    setStrokeColor: Dispatch<SetStateAction<string>>;
-    fillColor: string;
-    setFillColor: Dispatch<SetStateAction<string>>;
-    isFilled: boolean;
-    setIsFilled: Dispatch<SetStateAction<boolean>>;
-    borderRadius: number;
-    setBorderRadius: Dispatch<SetStateAction<number>>;
-    backgroundColor: string;
-    setBackgroundColor: Dispatch<SetStateAction<string>>;
-    // A ref that contains the logo
+    setSidebarOpen: Dispatch<SetStateAction<boolean>>;
+    logo: Logo;
+    setBackgroundColor: (value: string) => void;
+    setIconSize: (value: number) => void;
+    setIconRotation: (value: number) => void;
+    setStrokeWidth: (value: number) => void;
+    setStrokeColor: (value: string) => void;
+    setFillColor: (value: string) => void;
+    setIsFilled: (value: boolean) => void;
+    setBorderRadius: (value: number) => void;
+    setLogoIcon: (value: string) => void;
+    setIsGradientBackground: (value: boolean) => void;
+    setShadow: (value: string) => void;
     logoRef: React.RefObject<HTMLDivElement> | null;
-    logoIcon: string;
-    setLogoIcon: Dispatch<SetStateAction<string>>;
-    isGradientBackground: boolean;
-    setIsGradientBackground: Dispatch<SetStateAction<boolean>>;
 }
+
+type Logo = {
+    icon: string;
+    size: number;
+    rotation: number;
+    strokeWidth: number;
+    strokeColor: string;
+    fillColor: string;
+    isFilled: boolean;
+    borderRadius: number;
+    backgroundColor: string;
+    shadow: string;
+    isGradientBackground: boolean;
+};
+
+type LogoAction =
+    | {
+          type: 'SET_LOGO_ICON';
+          value: Logo['icon'];
+      }
+    | {
+          type: 'SET_ICON_SIZE';
+          value: Logo['size'];
+      }
+    | {
+          type: 'SET_ICON_ROTATION';
+          value: Logo['rotation'];
+      }
+    | {
+          type: 'SET_STROKE_WIDTH';
+          value: Logo['strokeWidth'];
+      }
+    | {
+          type: 'SET_STROKE_COLOR';
+          value: Logo['strokeColor'];
+      }
+    | {
+          type: 'SET_FILL_COLOR';
+          value: Logo['fillColor'];
+      }
+    | {
+          type: 'SET_IS_FILLED';
+          value: Logo['isFilled'];
+      }
+    | {
+          type: 'SET_BORDER_RADIUS';
+          value: Logo['borderRadius'];
+      }
+    | {
+          type: 'SET_BACKGROUND_COLOR';
+          value: Logo['backgroundColor'];
+      }
+    | {
+          type: 'SET_SHADOW';
+          value: Logo['shadow'];
+      }
+    | {
+          type: 'IS_GRADIENT_BACKGROUND';
+          value: Logo['isGradientBackground'];
+      };
+
+const reducer = (logo: Logo, action: LogoAction) => {
+    switch (action.type) {
+        case 'SET_LOGO_ICON':
+            return {
+                ...logo,
+                icon: action.value,
+            };
+
+        case 'SET_ICON_SIZE':
+            return {
+                ...logo,
+                size: action.value,
+            };
+
+        case 'SET_ICON_ROTATION':
+            return {
+                ...logo,
+                rotation: action.value,
+            };
+
+        case 'SET_STROKE_WIDTH':
+            return {
+                ...logo,
+                strokeWidth: action.value,
+            };
+
+        case 'SET_STROKE_COLOR':
+            return {
+                ...logo,
+                strokeColor: action.value,
+            };
+
+        case 'SET_FILL_COLOR':
+            return {
+                ...logo,
+                fillColor: action.value,
+            };
+
+        case 'SET_IS_FILLED':
+            return {
+                ...logo,
+                isFilled: action.value,
+            };
+
+        case 'SET_BORDER_RADIUS':
+            return {
+                ...logo,
+                borderRadius: action.value,
+            };
+
+        case 'SET_BACKGROUND_COLOR':
+            return {
+                ...logo,
+                backgroundColor: action.value,
+            };
+
+        case 'SET_SHADOW':
+            return {
+                ...logo,
+                shadow: action.value,
+            };
+
+        case 'IS_GRADIENT_BACKGROUND':
+            return {
+                ...logo,
+                isGradientBackground: action.value,
+            };
+
+        default:
+            throw new Error();
+    }
+};
+
+const INITIAL_LOGO: Logo = {
+    icon: 'chef-hat',
+    size: 200,
+    rotation: 15,
+    strokeWidth: 2,
+    strokeColor: '#ffffff',
+    fillColor: '#000000',
+    isFilled: false,
+    borderRadius: 65,
+    backgroundColor:
+        'linear-gradient(45deg, RGBA(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%)',
+    shadow: '0px 0px 0px 0px rgba(0,0,0,0)',
+    isGradientBackground: true,
+};
 
 // BOILER: export the context in the boilerplate
 export const AppContext = createContext<ContextProps>({
     sidebarOpen: false,
-    setSidebarOpen: (): boolean => false,
-    iconSize: 200,
-    setIconSize: (): number => 200,
-    iconRotation: 0,
-    setIconRotation: (): number => 0,
-    strokeWidth: 2,
-    setStrokeWidth: (): number => 0,
-    strokeColor: '#000000',
-    setStrokeColor: (): string => '#000000',
-    fillColor: '#000000',
-    setFillColor: (): string => '#000000',
-    isFilled: false,
-    setIsFilled: (): boolean => false,
-    borderRadius: 0,
-    setBorderRadius: (): number => 0,
-    backgroundColor: '#000000',
-    setBackgroundColor: (): string => '#000000',
+    setSidebarOpen: () => false,
+    logo: INITIAL_LOGO,
+    setBackgroundColor: () => '',
+    setIconSize: () => 0,
+    setIconRotation: () => 45,
+    setStrokeWidth: () => 0,
+    setStrokeColor: () => '',
+    setFillColor: () => '',
+    setIsFilled: () => false,
+    setBorderRadius: () => 0,
+    setLogoIcon: () => '',
+    setIsGradientBackground: () => false,
+    setShadow: () => '',
     logoRef: null,
-    logoIcon: '',
-    setLogoIcon: (): string => '',
-    isGradientBackground: false,
-    setIsGradientBackground: (): boolean => false,
 });
 
 export default function AppProvider({
@@ -69,47 +201,71 @@ export default function AppProvider({
     children: React.ReactNode;
 }) {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-    const [iconSize, setIconSize] = useState<number>(200);
-    const [iconRotation, setIconRotation] = useState<number>(0);
-    const [strokeWidth, setStrokeWidth] = useState<number>(2);
-    const [strokeColor, setStrokeColor] = useState<string>('#ffffff');
-    const [fillColor, setFillColor] = useState<string>('#000000');
-    const [isFilled, setIsFilled] = useState<boolean>(false);
-    const [borderRadius, setBorderRadius] = useState<number>(0);
-    const [backgroundColor, setBackgroundColor] = useState<string>(
-        'linear-gradient(90deg, rgba(96,93,93,1) 0%, rgba(255,255,255,1) 100%)'
-    );
+    const [logo, dispatch] = useReducer(reducer, INITIAL_LOGO);
     const logoRef = useRef<HTMLDivElement>(null);
-    const [logoIcon, setLogoIcon] = useState<string>('chef-hat');
-    const [isGradientBackground, setIsGradientBackground] =
-        useState<boolean>(true);
+
+    const setIconSize = (value: number) => {
+        dispatch({ type: 'SET_ICON_SIZE', value });
+    };
+
+    const setIconRotation = (value: number) => {
+        dispatch({ type: 'SET_ICON_ROTATION', value });
+    };
+
+    const setStrokeWidth = (value: number) => {
+        dispatch({ type: 'SET_STROKE_WIDTH', value });
+    };
+
+    const setStrokeColor = (value: string) => {
+        dispatch({ type: 'SET_STROKE_COLOR', value });
+    };
+
+    const setFillColor = (value: string) => {
+        dispatch({ type: 'SET_FILL_COLOR', value });
+    };
+
+    const setIsFilled = (value: boolean) => {
+        dispatch({ type: 'SET_IS_FILLED', value });
+    };
+
+    const setBorderRadius = (value: number) => {
+        dispatch({ type: 'SET_BORDER_RADIUS', value });
+    };
+
+    const setBackgroundColor = (value: string) => {
+        dispatch({ type: 'SET_BACKGROUND_COLOR', value });
+    };
+
+    const setLogoIcon = useCallback((value: string) => {
+        dispatch({ type: 'SET_LOGO_ICON', value });
+    }, []);
+
+    const setIsGradientBackground = useCallback((value: boolean) => {
+        dispatch({ type: 'IS_GRADIENT_BACKGROUND', value });
+    }, []);
+
+    const setShadow = (value: string) => {
+        dispatch({ type: 'SET_SHADOW', value });
+    };
 
     return (
         <AppContext.Provider
             value={{
+                logo,
                 sidebarOpen,
                 setSidebarOpen,
-                iconSize,
                 setIconSize,
-                iconRotation,
                 setIconRotation,
-                strokeWidth,
                 setStrokeWidth,
-                strokeColor,
                 setStrokeColor,
-                fillColor,
                 setFillColor,
-                isFilled,
                 setIsFilled,
-                borderRadius,
                 setBorderRadius,
-                backgroundColor,
                 setBackgroundColor,
-                logoRef,
-                logoIcon,
                 setLogoIcon,
-                isGradientBackground,
                 setIsGradientBackground,
+                setShadow,
+                logoRef,
             }}
         >
             {children}

@@ -35,19 +35,7 @@ type WorkBenchProps = {
 };
 
 export const WorkBench = ({ className }: WorkBenchProps) => {
-    const {
-        iconSize,
-        iconRotation,
-        strokeWidth,
-        strokeColor,
-        fillColor,
-        isFilled,
-        backgroundColor,
-        borderRadius,
-        logoRef,
-        logoIcon,
-        isGradientBackground,
-    } = useContext(AppContext);
+    const { logo, logoRef } = useContext(AppContext);
 
     return (
         <>
@@ -73,13 +61,15 @@ export const WorkBench = ({ className }: WorkBenchProps) => {
                             >
                                 <div
                                     style={{
-                                        backgroundImage: isGradientBackground
-                                            ? backgroundColor
-                                            : undefined,
-                                        backgroundColor: !isGradientBackground
-                                            ? backgroundColor
-                                            : undefined,
-                                        borderRadius: `${borderRadius}px`,
+                                        backgroundImage:
+                                            logo.isGradientBackground
+                                                ? logo.backgroundColor
+                                                : undefined,
+                                        backgroundColor:
+                                            !logo.isGradientBackground
+                                                ? logo.backgroundColor
+                                                : undefined,
+                                        borderRadius: `${logo.borderRadius}px`,
                                     }}
                                     className={`
                             rounded-[20px]
@@ -93,20 +83,20 @@ export const WorkBench = ({ className }: WorkBenchProps) => {
                                         <span>
                                             <IconComp
                                                 name={kebabCaseToCapitlizedCamelCase(
-                                                    logoIcon
+                                                    logo.icon
                                                 )}
                                                 style={{
-                                                    transform: `rotate(${iconRotation}deg)`,
-                                                    strokeWidth: `${strokeWidth}px`,
-                                                    stroke: `${strokeColor}`,
+                                                    transform: `rotate(${logo.rotation}deg)`,
+                                                    strokeWidth: `${logo.strokeWidth}px`,
+                                                    stroke: `${logo.strokeColor}`,
                                                     fill: `${
-                                                        isFilled
-                                                            ? fillColor
+                                                        logo.isFilled
+                                                            ? logo.fillColor
                                                             : 'none'
                                                     }`,
                                                 }}
-                                                width={iconSize}
-                                                height={iconSize}
+                                                width={logo.size}
+                                                height={logo.size}
                                                 viewBox='0 0 24 24'
                                             />
                                         </span>

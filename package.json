@@ -26,6 +26,7 @@
         "@radix-ui/react-toast": "^1.1.5",
         "@radix-ui/react-tooltip": "^1.0.7",
         "@types/mailgun-js": "^0.22.18",
+        "@uidotdev/usehooks": "^2.4.1",
         "@uiw/react-color": "^2.0.5",
         "@uiw/react-color-circle": "^2.0.5",
         "@uiw/react-color-editable-input": "^2.0.5",

@@ -3,14 +3,14 @@
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { AppContext } from '@/providers/app-provider';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import BestGradientColorPicker, {
     useColorPicker,
 } from 'react-best-gradient-color-picker';
 import { SliderWithLabel } from '../slider-with-label';
 
 export function GradientColorPicker({}) {
-    const { backgroundColor, setBackgroundColor, setIsGradientBackground } =
+    const { logo, setBackgroundColor, setIsGradientBackground } =
         useContext(AppContext);
 
     const {
@@ -22,7 +22,7 @@ export function GradientColorPicker({}) {
         setRadial,
         degrees,
         setDegrees,
-    } = useColorPicker(backgroundColor, setBackgroundColor);
+    } = useColorPicker(logo.backgroundColor, setBackgroundColor);
 
     // REVIEW: CHECK WITH COMEAU. I don't like this pattern of controlling a state with a useEffect and syncing it with another state.
     //  What should be the best way to do this? Should lift the hook to the context? isn't that an overkill?
@@ -50,9 +50,9 @@ export function GradientColorPicker({}) {
                 <Label htmlFor='airplane-mode'>Gradiente</Label>
             </div>
             <BestGradientColorPicker
-                value={backgroundColor}
+                value={logo.backgroundColor}
                 onChange={(value: string) => {
-                    console.log(value);
+                    console.log('color picked', value);
                     setBackgroundColor(value);
                 }}
                 className={''}
