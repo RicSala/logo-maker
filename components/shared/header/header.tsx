@@ -2,9 +2,9 @@
 
 import { DownloadButton } from '@/components/downloadButton';
 import { Button } from '@/components/ui/button';
-import { useAppProvider } from '@/providers/app-provider';
-import { Menu } from 'lucide-react';
-import { useState } from 'react';
+import { AppContext, useAppProvider } from '@/providers/app-provider';
+import { Menu, Undo } from 'lucide-react';
+import { useContext, useState } from 'react';
 
 // import SearchModal from '@/components/search-modal'
 // import Notifications from '@/components/dropdown-notifications'
@@ -13,7 +13,7 @@ import { useState } from 'react';
 // import DropdownProfile from '@/components/dropdown-profile'
 
 export default function Header() {
-    const { sidebarOpen, setSidebarOpen } = useAppProvider();
+    const { sidebarOpen, setSidebarOpen, undo } = useAppProvider();
     const [searchModalOpen, setSearchModalOpen] = useState<boolean>(false);
 
     return (
@@ -75,6 +75,13 @@ export default function Header() {
                         {/*  Divider */}
                         <hr className='w-px h-6 bg-slate-200 dark:bg-slate-700 border-none' />
                         {/* <DropdownProfile align='right' /> */}
+                        <Button
+                            onClick={() => {
+                                undo();
+                            }}
+                        >
+                            <Undo />
+                        </Button>
                         <DownloadButton />
                     </div>
                 </div>

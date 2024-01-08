@@ -12,6 +12,7 @@ import {
     useRef,
     useState,
 } from 'react';
+// BOILER: better change to useHooks
 import { useDebouncedValue } from '@mantine/hooks';
 import { AppContext } from '@/providers/app-provider';
 import { Button } from './ui/button';
