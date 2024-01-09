@@ -94,27 +94,6 @@ const isValidLogo = (logo: Logo) => {
     return true;
 };
 
-function debounce<T extends (...args: any[]) => any>(func: T, waitFor: number) {
-    console.log('debounce');
-    // This variable will hold the reference to the timeout
-    let timeout: NodeJS.Timeout;
-
-    // Return a new function that will debounce the execution of 'func'
-    return (...args: Parameters<T>) => {
-        // If 'timeout' is already set, clear it. This happens if the debounced
-        // function is called again before the timeout has elapsed
-        if (timeout) {
-            console.log('clearTimeout');
-            clearTimeout(timeout);
-        }
-        console.log('setTimeout');
-        // if no timeout has been set, call 'func' after 'waitFor' ms
-        timeout = setTimeout(() => {
-            func(...args);
-        }, waitFor);
-    };
-}
-
 export default function AppProvider({
     children,
 }: {
@@ -122,14 +101,7 @@ export default function AppProvider({
 }) {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
     const logoRef = useRef<HTMLDivElement>(null);
-    const [logoHistory, setLogoHistory] = useLocalStorage<Logo[]>('logo', []);
-    // Using useRef to persist the function across renders
-    const debouncedUpdateHistoryRef = useRef<(logo: Logo) => void>();
-
-    useEffect(() => {
-        // Initialize the debounced function when the component mounts
-        debouncedUpdateHistoryRef.current = debounce(updateHistory, 300);
-    }, []); // Empty dependency array to run only once on mount
+    const [logoHistory, setLogoHistory] = useLocalStorage<Logo[]>("logo", []);
 
     const [logo, reducerDispatch] = useReducer(
         reducer,
@@ -146,7 +118,6 @@ export default function AppProvider({
     );
 
     const updateHistory = (logo: Logo) => {
-        console.log('updateHistory');
         let newHistory: Logo[] = [];
         if (logoHistory !== null) {
             newHistory = logoHistory;
@@ -160,15 +131,10 @@ export default function AppProvider({
     };
 
     // Monkey patch the dispatch function to update the history
-    const dispatch = useCallback(
-        (action: any) => {
-            reducerDispatch(action);
-            if (debouncedUpdateHistoryRef.current) {
-                debouncedUpdateHistoryRef.current(logo);
-            }
-        },
-        [logo]
-    );
+    const dispatch = (action: any) => {
+        reducerDispatch(action);
+        updateHistory(logo);
+    };
 
     const undo = () => {
         let history: Logo[] = [];
