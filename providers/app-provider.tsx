@@ -111,6 +111,7 @@ function debounce<T extends (...args: any[]) => any>(func: T, waitFor: number) {
         // if no timeout has been set, call 'func' after 'waitFor' ms
         timeout = setTimeout(() => {
             func(...args);
+            console.log('Debounced function executed', func);
         }, waitFor);
     };
 }
@@ -126,11 +127,6 @@ export default function AppProvider({
     // Using useRef to persist the function across renders
     const debouncedUpdateHistoryRef = useRef<(logo: Logo) => void>();
 
-    useEffect(() => {
-        // Initialize the debounced function when the component mounts
-        debouncedUpdateHistoryRef.current = debounce(updateHistory, 300);
-    }, []); // Empty dependency array to run only once on mount
-
     const [logo, reducerDispatch] = useReducer(reducer, INITIAL_LOGO);
 
     useEffect(() => {
@@ -139,11 +135,11 @@ export default function AppProvider({
         }
     }, [logoHistory]);
 
-    const updateHistory = (logo: Logo) => {
+    const updateHistory = useCallback((logo: Logo) => {
         console.log('updateHistory');
         let newHistory: Logo[] = [];
         if (logoHistory !== null) {
-            newHistory = logoHistory;
+            newHistory = [...logoHistory];
         }
         newHistory.push(logo);
         if (newHistory.length > MAX_UNDOS) {
@@ -151,7 +147,11 @@ export default function AppProvider({
         }
         // set the local storage
         setLogoHistory(newHistory);
-    };
+    }, [logoHistory, setLogoHistory]);
+
+    useEffect(() => {
+        debouncedUpdateHistoryRef.current = debounce(updateHistory, 300);
+    }, [updateHistory]);
 
     // Monkey patch the dispatch function to update the history
     const dispatch = useCallback(
