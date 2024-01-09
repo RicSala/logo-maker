@@ -131,19 +131,13 @@ export default function AppProvider({
         debouncedUpdateHistoryRef.current = debounce(updateHistory, 300);
     }, []); // Empty dependency array to run only once on mount
 
-    const [logo, reducerDispatch] = useReducer(
-        reducer,
-        INITIAL_LOGO,
-        (initialValue) => {
-            // let history: Logo[] = [];
-            if (logoHistory !== null) {
-                if (isValidLogo(logoHistory[logoHistory.length - 1])) {
-                    return logoHistory[logoHistory.length - 1];
-                }
-            }
-            return initialValue;
+    const [logo, reducerDispatch] = useReducer(reducer, INITIAL_LOGO);
+
+    useEffect(() => {
+        if (logoHistory && logoHistory.length > 0 && isValidLogo(logoHistory[logoHistory.length - 1])) {
+            reducerDispatch({ type: 'SET_COMPLETE_LOGO', value: logoHistory[logoHistory.length - 1] });
         }
-    );
+    }, [logoHistory]);
 
     const updateHistory = (logo: Logo) => {
         console.log('updateHistory');

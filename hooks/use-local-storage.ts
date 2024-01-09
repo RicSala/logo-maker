@@ -1,21 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function useLocalStorage<T>(key: string, initialValue: T) {
     // Only try to access localStorage if it's available (client-side)
     const isClient = typeof window !== 'undefined';
 
-    const [storedValue, setStoredValue] = useState<T>(() => {
-        if (!isClient) {
-            return initialValue;
-        }
+    const [storedValue, setStoredValue] = useState<T>(initialValue);
+
+    useEffect(() => {
         try {
             const item = window.localStorage.getItem(key);
-            return item ? JSON.parse(item) : initialValue;
+            if (item) {
+                setStoredValue(JSON.parse(item));
+            }
         } catch (error) {
             console.error('Error accessing localStorage:', error);
-            return initialValue;
         }
-    });
+    }, [key]);
 
     const setValue = (value: T | ((val: T) => T)) => {
         try {
