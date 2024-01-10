@@ -5,6 +5,7 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     const isClient = typeof window !== 'undefined';
 
     const [storedValue, setStoredValue] = useState<T>(initialValue);
+    const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
     useEffect(() => {
         try {
@@ -15,20 +16,22 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
         } catch (error) {
             console.error('Error accessing localStorage:', error);
         }
+        setIsLoaded(true);
     }, [key]);
 
     const setValue = useCallback((value: T | ((val: T) => T)) => {
         try {
-            const valueToStore =
-                value instanceof Function ? value(storedValue) : value;
-            setStoredValue(valueToStore);
-            if (isClient) {
-                window.localStorage.setItem(key, JSON.stringify(valueToStore));
-            }
+            setStoredValue((prevValue) => {
+                const valueToStore = value instanceof Function ? value(prevValue) : value;
+                if (isClient) {
+                    window.localStorage.setItem(key, JSON.stringify(valueToStore));
+                }
+                return valueToStore;
+            });
         } catch (error) {
             console.error('Error setting localStorage:', error);
         }
-    }, [isClient, key, storedValue]);
+    }, [isClient, key]);
 
-    return [storedValue, setValue] as const;
+    return [storedValue, setValue, isLoaded] as const;
 }

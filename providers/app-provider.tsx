@@ -123,46 +123,60 @@ export default function AppProvider({
 }) {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
     const logoRef = useRef<HTMLDivElement>(null);
-    const [logoHistory, setLogoHistory] = useLocalStorage<Logo[]>('logo', []);
-    // Using useRef to persist the function across renders
-    const debouncedUpdateHistoryRef = useRef<(logo: Logo) => void>();
-
+    const [logoHistory, setLogoHistory, logoHistoryIsLoadedFromLocalStorage] = useLocalStorage<Logo[]>('logo', []);
     const [logo, reducerDispatch] = useReducer(reducer, INITIAL_LOGO);
+    const [logoIsSetFromHistory, setLogoIsSetFromHistory] = useState<boolean>(false);
+    const [userHasInterected, setUserHasInterected] = useState<boolean>(false);
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
+        if (!logoHistoryIsLoadedFromLocalStorage || logoIsSetFromHistory) {
+            /**
+             * Don't the set logo from history if:
+             * 1) The history is not loaded yet or
+             * 2) The logo is already set
+             */
+            return;
+        }
+        setLogoIsSetFromHistory(true);
         if (logoHistory && logoHistory.length > 0 && isValidLogo(logoHistory[logoHistory.length - 1])) {
             reducerDispatch({ type: 'SET_COMPLETE_LOGO', value: logoHistory[logoHistory.length - 1] });
         }
-    }, [logoHistory]);
+    }, [logoHistory, logoHistoryIsLoadedFromLocalStorage, logoIsSetFromHistory]);
 
-    const updateHistory = useCallback((logo: Logo) => {
-        console.log('updateHistory');
-        let newHistory: Logo[] = [];
-        if (logoHistory !== null) {
-            newHistory = [...logoHistory];
-        }
-        newHistory.push(logo);
-        if (newHistory.length > MAX_UNDOS) {
-            newHistory.shift();
-        }
-        // set the local storage
-        setLogoHistory(newHistory);
-    }, [logoHistory, setLogoHistory]);
-
-    useEffect(() => {
-        debouncedUpdateHistoryRef.current = debounce(updateHistory, 300);
-    }, [updateHistory]);
-
-    // Monkey patch the dispatch function to update the history
     const dispatch = useCallback(
         (action: any) => {
+            setUserHasInterected(true);
             reducerDispatch(action);
-            if (debouncedUpdateHistoryRef.current) {
-                debouncedUpdateHistoryRef.current(logo);
-            }
         },
-        [logo]
+        []
     );
+
+    useEffect(() => {
+        if (!userHasInterected) {
+            // Don't update history until the user starts interecting
+            return;
+        }
+
+        timerRef.current = setTimeout(() => {
+            console.log('Will update history');
+            setLogoHistory((prevLogoHistory) => {
+                let newHistory: Logo[] = [];
+                if (prevLogoHistory !== null) {
+                    newHistory = [...prevLogoHistory];
+                }
+                newHistory.push(logo);
+                if (newHistory.length > MAX_UNDOS) {
+                    newHistory.shift();
+                }
+                return newHistory;
+            })
+        }, 300);
+
+        return () => {
+            if (timerRef.current) clearTimeout(timerRef.current);
+        };
+    }, [logo, setLogoHistory, userHasInterected]);
 
     const undo = () => {
         let history: Logo[] = [];
