@@ -27,6 +27,7 @@ export const kebabCaseToCapitlizedCamelCase = (str: string) => {
 };
 
 export const kebabCaseToString = (str: string) => {
+    console.log('here!!', { str });
     return str
         .split('-')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))

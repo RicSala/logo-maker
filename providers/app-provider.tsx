@@ -94,8 +94,13 @@ const isValidLogo = (logo: Logo) => {
     return true;
 };
 
-function debounce<T extends (...args: any[]) => any>(func: T, waitFor: number) {
-    console.log('debounce');
+/**
+ * Debounce function. When we call this function, it will return a new function that will have a timeout (closure). If the timeout is already set, it will clear it and set a new one, creating a "debounce" effect. The function has access to the timeout variable because of the closure: it was in its scope when the function was created.
+ */
+function debouncedFunction<T extends (...args: any[]) => any>(
+    func: T,
+    waitFor: number
+) {
     // This variable will hold the reference to the timeout
     let timeout: NodeJS.Timeout;
 
@@ -104,16 +109,27 @@ function debounce<T extends (...args: any[]) => any>(func: T, waitFor: number) {
         // If 'timeout' is already set, clear it. This happens if the debounced
         // function is called again before the timeout has elapsed
         if (timeout) {
-            console.log('clearTimeout');
             clearTimeout(timeout);
+        } else {
         }
-        console.log('setTimeout');
-        // if no timeout has been set, call 'func' after 'waitFor' ms
+        // create a new timeout
         timeout = setTimeout(() => {
             func(...args);
         }, waitFor);
     };
 }
+
+const updateArray = <T,>(newElement: T, array: T[]) => {
+    let newHistory: T[] = [];
+    if (array !== null) {
+        newHistory = array;
+    }
+    newHistory.push(newElement);
+    if (newHistory.length > MAX_UNDOS) {
+        newHistory.shift();
+    }
+    return newHistory;
+};
 
 export default function AppProvider({
     children,
@@ -123,13 +139,6 @@ export default function AppProvider({
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
     const logoRef = useRef<HTMLDivElement>(null);
     const [logoHistory, setLogoHistory] = useLocalStorage<Logo[]>('logo', []);
-    // Using useRef to persist the function across renders
-    const debouncedUpdateHistoryRef = useRef<(logo: Logo) => void>();
-
-    useEffect(() => {
-        // Initialize the debounced function when the component mounts
-        debouncedUpdateHistoryRef.current = debounce(updateHistory, 300);
-    }, []); // Empty dependency array to run only once on mount
 
     const [logo, reducerDispatch] = useReducer(
         reducer,
@@ -145,43 +154,45 @@ export default function AppProvider({
         }
     );
 
-    const updateHistory = (logo: Logo) => {
-        console.log('updateHistory');
-        let newHistory: Logo[] = [];
-        if (logoHistory !== null) {
-            newHistory = logoHistory;
-        }
-        newHistory.push(logo);
-        if (newHistory.length > MAX_UNDOS) {
-            newHistory.shift();
-        }
-        // set the local storage
-        setLogoHistory(newHistory);
-    };
+    // Using useRef to persist the function across renders
+    const debouncedUpdateHistoryRef = useRef<
+        (newItem: Logo, history: Logo[]) => void
+    >(
+        debouncedFunction((newItem, array) => {
+            // console.log('previous from debounced', { array });
+            const newHistory = updateArray(newItem, array);
+            // console.log('history from debounced', { newHistory });
+            setLogoHistory(newHistory);
+        }, 300)
+    );
 
     // Monkey patch the dispatch function to update the history
     const dispatch = useCallback(
         (action: any) => {
             reducerDispatch(action);
             if (debouncedUpdateHistoryRef.current) {
-                debouncedUpdateHistoryRef.current(logo);
+                console.log('dispatch', { logo, logoHistory });
+                // FIXED: BUG: here the logo is not updated yet!!!!!!!!!!!!
+                // debouncedUpdateHistoryRef.current(logo, logoHistory);
+
+                // // SOLUTION: apply the action value to the logo
+                const newLogo = reducer(logo, action);
+                debouncedUpdateHistoryRef.current(newLogo, logoHistory);
             }
         },
-        [logo]
+        [logo, logoHistory]
     );
 
     const undo = () => {
-        let history: Logo[] = [];
-        if (localStorage.getItem('logo') !== null) {
-            history = JSON.parse(localStorage.getItem('logo')!);
-        }
-        if (history.length <= 1) {
+        if (logoHistory.length <= 1) {
             return;
         }
-        history.pop();
+        const newHistory = [...logoHistory];
+        newHistory.pop();
         // set the local storage
-        localStorage.setItem('logo', JSON.stringify(history));
-        const lastLogo = history[history.length - 1];
+        setLogoHistory(newHistory);
+        // Show the last logo
+        const lastLogo = newHistory[newHistory.length - 1];
         reducerDispatch({ type: 'SET_COMPLETE_LOGO', value: lastLogo });
     };
 
@@ -251,6 +262,8 @@ export default function AppProvider({
                 setIsGradientBackground,
                 setShadow,
                 logoRef,
+                // @ts-ignore
+                logoHistory,
                 undo,
             }}
         >

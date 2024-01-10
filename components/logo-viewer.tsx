@@ -35,7 +35,8 @@ type WorkBenchProps = {
 };
 
 export const WorkBench = ({ className }: WorkBenchProps) => {
-    const { logo, logoRef } = useContext(AppContext);
+    // @ts-ignore
+    const { logo, logoRef, logoHistory } = useContext(AppContext);
 
     return (
         <>
@@ -102,6 +103,11 @@ export const WorkBench = ({ className }: WorkBenchProps) => {
                                         </span>
                                     </div>
                                 </div>
+                            </div>
+                            <div className='absolute bottom-16 right-1'>
+                                {JSON.stringify(
+                                    logoHistory.map((l: any) => l.size)
+                                )}
                             </div>
                         </div>
                     </TooltipTrigger>
