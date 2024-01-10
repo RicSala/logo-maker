@@ -1,3 +1,4 @@
+import { Logo } from '@/providers/app-provider';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -48,4 +49,54 @@ export const range = (start: number, end: number, step = 1) => {
     }
 
     return output;
+};
+
+/**
+ * Debounce function. When we call this function, it will return a new function that will have a timeout (closure). If the timeout is already set, it will clear it and set a new one, creating a "debounce" effect. The function has access to the timeout variable because of the closure: it was in its scope when the function was created.
+ */
+export function debouncedFunction<T extends (...args: any[]) => any>(
+    func: T,
+    waitFor: number
+) {
+    // This variable will hold the reference to the timeout
+    let timeout: NodeJS.Timeout;
+
+    // Return a new function that will debounce the execution of 'func'
+    return (...args: Parameters<T>) => {
+        // If 'timeout' is already set, clear it. This happens if the debounced
+        // function is called again before the timeout has elapsed
+        if (timeout) {
+            clearTimeout(timeout);
+        } else {
+        }
+        // create a new timeout
+        timeout = setTimeout(() => {
+            func(...args);
+        }, waitFor);
+    };
+}
+
+export const isValidLogo = (logo: Logo) => {
+    // console.log('isValidLogo');
+    // TODO: This is validate the logo
+    if (logo === undefined || logo === null || logo.icon === undefined) {
+        return false;
+    }
+    return true;
+};
+
+export const updateArray = <T>(
+    newElement: T,
+    array: T[],
+    MAX_UNDOS: number
+) => {
+    let newHistory: T[] = [];
+    if (array !== null) {
+        newHistory = array;
+    }
+    newHistory.push(newElement);
+    if (newHistory.length > MAX_UNDOS) {
+        newHistory.shift();
+    }
+    return newHistory;
 };

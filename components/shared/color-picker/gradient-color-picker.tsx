@@ -24,12 +24,19 @@ export function GradientColorPicker({}) {
         setDegrees,
     } = useColorPicker(logo.backgroundColor, setBackgroundColor);
 
-    // REVIEW: CHECK WITH COMEAU. I don't like this pattern of controlling a state with a useEffect and syncing it with another state.
-    //  What should be the best way to do this? Should lift the hook to the context? isn't that an overkill?
-    useEffect(() => {
-        console.log('isGradient', isGradient);
-        setIsGradientBackground(isGradient);
-    }, [isGradient, setIsGradientBackground]);
+    // REVIEW: This does not seem to be necessary. Check with Comeau.
+    // // memoize setIsGradientBackground
+    // const setIsGradientBackgroundMemoized = useCallback(
+    //     setIsGradientBackground,
+    //     []
+    // );
+
+    // // REVIEW: CHECK WITH COMEAU. I don't like this pattern of controlling a state with a useEffect and syncing it with another state.
+    // //  What should be the best way to do this? Should lift the hook to the context? isn't that an overkill?
+    // useEffect(() => {
+    //     console.log('isGradient', isGradient);
+    //     setIsGradientBackground(isGradient);
+    // }, [isGradient, setIsGradientBackground]);
 
     return (
         <div className='space-y-2'>
@@ -45,6 +52,7 @@ export function GradientColorPicker({}) {
                     checked={isGradient === true}
                     onCheckedChange={(checked: boolean) => {
                         checked ? setGradient() : setSolid();
+                        setIsGradientBackground(checked);
                     }}
                 />
                 <Label htmlFor='airplane-mode'>Gradiente</Label>
@@ -52,13 +60,11 @@ export function GradientColorPicker({}) {
             <BestGradientColorPicker
                 value={logo.backgroundColor}
                 onChange={(value: string) => {
-                    console.log('color picked', value);
                     setBackgroundColor(value);
                 }}
                 className={''}
                 hideColorTypeBtns
                 hideGradientStop
-                // hideGradientControls
                 hideAdvancedSliders
                 hideColorGuide
                 height={200}

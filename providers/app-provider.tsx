@@ -7,6 +7,7 @@ import {
     useCallback,
     useContext,
     useEffect,
+    useMemo,
     useReducer,
     useRef,
     useState,
@@ -14,6 +15,7 @@ import {
 
 import { reducer } from './logo-reducer';
 import { useLocalStorage } from '@/hooks/use-local-storage';
+import { debouncedFunction, updateArray } from '@/lib/utils';
 
 const MAX_UNDOS = 10;
 
@@ -85,93 +87,72 @@ export const AppContext = createContext<ContextProps>({
     undo: () => {},
 });
 
-const isValidLogo = (logo: Logo) => {
-    console.log('isValidLogo');
-    // TODO: This is validate the logo
-    if (logo === undefined || logo === null || logo.icon === undefined) {
-        return false;
-    }
-    return true;
-};
-
-/**
- * Debounce function. When we call this function, it will return a new function that will have a timeout (closure). If the timeout is already set, it will clear it and set a new one, creating a "debounce" effect. The function has access to the timeout variable because of the closure: it was in its scope when the function was created.
- */
-function debouncedFunction<T extends (...args: any[]) => any>(
-    func: T,
-    waitFor: number
-) {
-    // This variable will hold the reference to the timeout
-    let timeout: NodeJS.Timeout;
-
-    // Return a new function that will debounce the execution of 'func'
-    return (...args: Parameters<T>) => {
-        // If 'timeout' is already set, clear it. This happens if the debounced
-        // function is called again before the timeout has elapsed
-        if (timeout) {
-            clearTimeout(timeout);
-        } else {
-        }
-        // create a new timeout
-        timeout = setTimeout(() => {
-            func(...args);
-        }, waitFor);
-    };
-}
-
-const updateArray = <T,>(newElement: T, array: T[]) => {
-    let newHistory: T[] = [];
-    if (array !== null) {
-        newHistory = array;
-    }
-    newHistory.push(newElement);
-    if (newHistory.length > MAX_UNDOS) {
-        newHistory.shift();
-    }
-    return newHistory;
-};
-
 export default function AppProvider({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    console.log('###AppProvider###');
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
     const logoRef = useRef<HTMLDivElement>(null);
-    const [logoHistory, setLogoHistory] = useLocalStorage<Logo[]>('logo', []);
+    const memoizedInitialLogo = useMemo(() => [INITIAL_LOGO], []);
+    const historyRef = useRef<Logo | null>(INITIAL_LOGO);
+
+    const [logoHistory, setLogoHistory] = useLocalStorage<Logo[]>(
+        'logo',
+        memoizedInitialLogo,
+        historyRef
+    );
 
     const [logo, reducerDispatch] = useReducer(
         reducer,
         INITIAL_LOGO,
         (initialValue) => {
-            // let history: Logo[] = [];
-            if (logoHistory !== null) {
-                if (isValidLogo(logoHistory[logoHistory.length - 1])) {
-                    return logoHistory[logoHistory.length - 1];
-                }
-            }
+            // REVIEW: Why we cannot do it this way? Do the effects run AFTER the reducer?
+            // I think so! That's why we can do the "isMounted" trick! Because the effect runs after the reducer!
+            // if (logoHistory !== null) {
+            //     if (isValidLogo(logoHistory[logoHistory.length - 1])) {
+            //         return logoHistory[logoHistory.length - 1];
+            //     }
+            // }
             return initialValue;
         }
     );
 
+    // When the app loads, we need to take the last logo from the history and set it as the current logo. For that, I need to persist the history from the very first render. I can do that with a useRef.
+
     // Using useRef to persist the function across renders
+    // Review: What's the difference between useRef and useCallback then?
     const debouncedUpdateHistoryRef = useRef<
         (newItem: Logo, history: Logo[]) => void
     >(
         debouncedFunction((newItem, array) => {
             // console.log('previous from debounced', { array });
-            const newHistory = updateArray(newItem, array);
+            const newHistory = updateArray(newItem, array, MAX_UNDOS);
             // console.log('history from debounced', { newHistory });
             setLogoHistory(newHistory);
         }, 300)
     );
+
+    // useEffect to set the logo to the ref
+    useEffect(() => {
+        if (logoRef.current) {
+            // console.log('setting logo to ref', { logo });
+            console.log('setting logo to ref');
+            console.log('logo in the history ref', historyRef.current);
+            reducerDispatch({
+                type: 'SET_COMPLETE_LOGO',
+                value: historyRef.current as Logo,
+            });
+        }
+    }, []);
 
     // Monkey patch the dispatch function to update the history
     const dispatch = useCallback(
         (action: any) => {
             reducerDispatch(action);
             if (debouncedUpdateHistoryRef.current) {
-                console.log('dispatch', { logo, logoHistory });
+                // console.log('dispatch', { logo, logoHistory });
                 // FIXED: BUG: here the logo is not updated yet!!!!!!!!!!!!
                 // debouncedUpdateHistoryRef.current(logo, logoHistory);
 
@@ -232,9 +213,12 @@ export default function AppProvider({
         dispatch({ type: 'SET_LOGO_ICON', value });
     };
 
-    const setIsGradientBackground = (value: boolean) => {
-        dispatch({ type: 'IS_GRADIENT_BACKGROUND', value });
-    };
+    const setIsGradientBackground = useCallback(
+        (value: boolean) => {
+            dispatch({ type: 'IS_GRADIENT_BACKGROUND', value });
+        },
+        [dispatch]
+    );
 
     const setShadow = (value: string) => {
         dispatch({ type: 'SET_SHADOW', value });

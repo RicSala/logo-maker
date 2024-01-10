@@ -105,9 +105,10 @@ export const WorkBench = ({ className }: WorkBenchProps) => {
                                 </div>
                             </div>
                             <div className='absolute bottom-16 right-1'>
-                                {JSON.stringify(
+                                {/* REVIEW: It's not a bad approach to "paint" the state while working with it... */}
+                                {/* {JSON.stringify(
                                     logoHistory.map((l: any) => l.size)
-                                )}
+                                )} */}
                             </div>
                         </div>
                     </TooltipTrigger>

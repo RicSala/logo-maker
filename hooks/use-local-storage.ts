@@ -1,6 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
-export function useLocalStorage<T>(key: string, initialValue: T) {
+export function useLocalStorage<T>(
+    key: string,
+    initialValue: T,
+    initialState?: any
+) {
     // Only try to access localStorage if it's available (client-side)
     const isClient = typeof window !== 'undefined';
 
@@ -23,19 +27,36 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     //     }
     // });
 
-    const [storedValue, setStoredValue] = useState<T>(initialValue);
+    const [storedValue, setStoredValue] = useState<T>(() => initialValue);
+
+    const memoizedInitialValue = useMemo(() => initialValue, [initialValue]);
 
     useEffect(() => {
         const item = window.localStorage.getItem(key);
-        setStoredValue(item ? JSON.parse(item) : initialValue);
-    }, [key, initialValue]);
+        if (item) {
+            // if item exists, set storedValue to item
+            setStoredValue(JSON.parse(item));
+            initialState.current =
+                JSON.parse(item)[JSON.parse(item).length - 1];
+            console.log('initialState.current', initialState.current);
+        } else {
+            // if item doesn't exist, set storedValue to initialValue
+            setStoredValue((storedValue) => {
+                if (typeof storedValue === 'function') {
+                    return storedValue();
+                }
+                return storedValue;
+            });
+        }
+        // set the initial state ref to the last value of storedValue
+    }, [initialState, key, memoizedInitialValue]);
 
     const setValue = (value: T | ((val: T) => T)) => {
-        console.log('value from useLocalStorage', { value });
+        // console.log('value from useLocalStorage', { value });
         try {
             const valueToStore =
                 value instanceof Function ? value(storedValue) : value;
-            console.log('valueToStore', valueToStore);
+            // console.log('valueToStore', valueToStore);
             setStoredValue(() => valueToStore);
             if (isClient) {
                 window.localStorage.setItem(key, JSON.stringify(valueToStore));
