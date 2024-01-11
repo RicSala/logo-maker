@@ -105,8 +105,11 @@ export default function AppProvider({
 
     // REVIEW: how do we know if a function coming from a third party library is memoized? stable?
     const setLogoHistoryWithDebouncedUpdate = useCallback(
-        (value: HistoryState<Logo>) => {
-            setLogoHistory(value);
+        (newHistory: HistoryState<Logo>) => {
+            // first we save the logo as usual
+            setLogoHistory(newHistory);
+
+            newHistory = updateHistory(newHistory, 5);
         },
         [setLogoHistory]
     );
@@ -121,7 +124,6 @@ export default function AppProvider({
             present: { ...logoHistory.present, size: value },
             future: [...logoHistory.future],
         };
-        newHistory = updateHistory(newHistory, 5);
         setLogoHistory(newHistory);
     };
 
