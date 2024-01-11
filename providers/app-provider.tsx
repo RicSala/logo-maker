@@ -12,11 +12,9 @@ import {
 } from 'react';
 
 import { useLocalStorage, useHistoryState } from '@uidotdev/usehooks';
+import { updateHistory } from '@/lib/utils';
 
-import { reducer } from './reducer';
-import logo from '@/components/shared/logo';
-
-type HistoryState<T> = {
+export type HistoryState<T> = {
     past: T[];
     present: T;
     future: T[];
@@ -103,17 +101,28 @@ export default function AppProvider({
         future: [] as Logo[],
     });
 
-    console.log('logo history from context', logoHistory);
+    // console.log('logo history from context', logoHistory);
+
+    // REVIEW: how do we know if a function coming from a third party library is memoized? stable?
+    const setLogoHistoryWithDebouncedUpdate = useCallback(
+        (value: HistoryState<Logo>) => {
+            setLogoHistory(value);
+        },
+        [setLogoHistory]
+    );
 
     const logoRef = useRef<HTMLDivElement>(null);
     // Update local storage whenever the state changes
 
     const setIconSize = (value: number) => {
-        setLogoHistory({
-            past: [],
+        let newHistory: HistoryState<Logo> = {
+            // REVIEW: Probably need a deep copy here
+            past: [...logoHistory.past],
             present: { ...logoHistory.present, size: value },
-            future: [],
-        });
+            future: [...logoHistory.future],
+        };
+        newHistory = updateHistory(newHistory, 5);
+        setLogoHistory(newHistory);
     };
 
     const setIconRotation = (value: number) => {

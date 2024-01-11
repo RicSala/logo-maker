@@ -24,7 +24,7 @@ export function IconSettings({}) {
         setIsFilled,
     } = useContext(AppContext);
 
-    console.log('logo', logo);
+    // console.log('logo', logo);
 
     return (
         <div className='flex flex-col gap-4'>
