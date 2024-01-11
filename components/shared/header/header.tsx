@@ -2,7 +2,7 @@
 
 import { DownloadButton } from '@/components/downloadButton';
 import { Button } from '@/components/ui/button';
-import { AppContext, useAppProvider } from '@/providers/app-provider';
+import { AppContext, useAppProvider } from '@/providers/app/app-provider';
 import { Menu, Undo } from 'lucide-react';
 import { useContext, useState } from 'react';
 

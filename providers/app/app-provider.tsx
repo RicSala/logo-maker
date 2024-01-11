@@ -19,7 +19,7 @@ import { debouncedFunction, updateArray } from '@/lib/utils';
 
 const MAX_UNDOS = 10;
 
-interface ContextProps {
+export type ContextProps = {
     sidebarOpen: boolean;
     setSidebarOpen: Dispatch<SetStateAction<boolean>>;
     logo: Logo;
@@ -36,7 +36,7 @@ interface ContextProps {
     setShadow: (value: string) => void;
     logoRef: React.RefObject<HTMLDivElement> | null;
     undo: () => void;
-}
+};
 
 export type Logo = {
     icon: string;
@@ -92,14 +92,12 @@ export default function AppProvider({
 }: {
     children: React.ReactNode;
 }) {
-    console.log('###AppProvider###');
-    const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-    const logoRef = useRef<HTMLDivElement>(null);
+    const logoRef = useRef<HTMLDivElement>(null); // Ref to the logo div
     const memoizedInitialLogo = useMemo(() => [INITIAL_LOGO], []);
     const historyRef = useRef<Logo | null>(INITIAL_LOGO);
 
     const [logoHistory, setLogoHistory] = useLocalStorage<Logo[]>(
-        'logo',
+        'newLogo',
         memoizedInitialLogo,
         historyRef
     );
@@ -137,9 +135,6 @@ export default function AppProvider({
     // useEffect to set the logo to the ref
     useEffect(() => {
         if (logoRef.current) {
-            // console.log('setting logo to ref', { logo });
-            console.log('setting logo to ref');
-            console.log('logo in the history ref', historyRef.current);
             reducerDispatch({
                 type: 'SET_COMPLETE_LOGO',
                 value: historyRef.current as Logo,
@@ -232,8 +227,6 @@ export default function AppProvider({
         <AppContext.Provider
             value={{
                 logo,
-                sidebarOpen,
-                setSidebarOpen,
                 setIconSize,
                 setIconRotation,
                 setStrokeWidth,

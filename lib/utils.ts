@@ -1,4 +1,4 @@
-import { Logo } from '@/providers/app-provider';
+import { Logo } from '@/providers/app/app-provider';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 

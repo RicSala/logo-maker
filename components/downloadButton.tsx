@@ -4,7 +4,7 @@ import { Download } from 'lucide-react';
 import { Button } from './ui/button';
 import { toPng, toSvg } from 'html-to-image';
 import { useContext, useRef } from 'react';
-import { AppContext } from '@/providers/app-provider';
+import { AppContext } from '@/providers/app/app-provider';
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import {
     DropdownMenuContent,

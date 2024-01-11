@@ -7,7 +7,7 @@ import {
     TooltipTrigger,
 } from './ui/tooltip';
 import { useContext, useRef } from 'react';
-import { AppContext } from '@/providers/app-provider';
+import { AppContext } from '@/providers/app/app-provider';
 import IconComp from './lucide-icon';
 
 type LogoViewerProps = {

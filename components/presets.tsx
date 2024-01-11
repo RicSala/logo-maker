@@ -1,6 +1,6 @@
 'use client';
 
-import { AppContext } from '@/providers/app-provider';
+import { AppContext } from '@/providers/app/app-provider';
 import { useContext } from 'react';
 
 export function Presets({}) {

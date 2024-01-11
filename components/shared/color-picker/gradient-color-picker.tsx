@@ -2,7 +2,7 @@
 
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { AppContext } from '@/providers/app-provider';
+import { AppContext } from '@/providers/app/app-provider';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import BestGradientColorPicker, {
     useColorPicker,
