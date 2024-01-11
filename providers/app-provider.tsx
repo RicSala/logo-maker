@@ -5,10 +5,22 @@ import {
     SetStateAction,
     useCallback,
     useContext,
+    useEffect,
     useReducer,
     useRef,
     useState,
 } from 'react';
+
+import { useLocalStorage, useHistoryState } from '@uidotdev/usehooks';
+
+import { reducer } from './reducer';
+import logo from '@/components/shared/logo';
+
+type HistoryState<T> = {
+    past: T[];
+    present: T;
+    future: T[];
+};
 
 interface ContextProps {
     sidebarOpen: boolean;
@@ -26,9 +38,10 @@ interface ContextProps {
     setIsGradientBackground: (value: boolean) => void;
     setShadow: (value: string) => void;
     logoRef: React.RefObject<HTMLDivElement> | null;
+    undo: () => void;
 }
 
-type Logo = {
+export type Logo = {
     icon: string;
     size: number;
     rotation: number;
@@ -40,125 +53,6 @@ type Logo = {
     backgroundColor: string;
     shadow: string;
     isGradientBackground: boolean;
-};
-
-type LogoAction =
-    | {
-          type: 'SET_LOGO_ICON';
-          value: Logo['icon'];
-      }
-    | {
-          type: 'SET_ICON_SIZE';
-          value: Logo['size'];
-      }
-    | {
-          type: 'SET_ICON_ROTATION';
-          value: Logo['rotation'];
-      }
-    | {
-          type: 'SET_STROKE_WIDTH';
-          value: Logo['strokeWidth'];
-      }
-    | {
-          type: 'SET_STROKE_COLOR';
-          value: Logo['strokeColor'];
-      }
-    | {
-          type: 'SET_FILL_COLOR';
-          value: Logo['fillColor'];
-      }
-    | {
-          type: 'SET_IS_FILLED';
-          value: Logo['isFilled'];
-      }
-    | {
-          type: 'SET_BORDER_RADIUS';
-          value: Logo['borderRadius'];
-      }
-    | {
-          type: 'SET_BACKGROUND_COLOR';
-          value: Logo['backgroundColor'];
-      }
-    | {
-          type: 'SET_SHADOW';
-          value: Logo['shadow'];
-      }
-    | {
-          type: 'IS_GRADIENT_BACKGROUND';
-          value: Logo['isGradientBackground'];
-      };
-
-const reducer = (logo: Logo, action: LogoAction) => {
-    switch (action.type) {
-        case 'SET_LOGO_ICON':
-            return {
-                ...logo,
-                icon: action.value,
-            };
-
-        case 'SET_ICON_SIZE':
-            return {
-                ...logo,
-                size: action.value,
-            };
-
-        case 'SET_ICON_ROTATION':
-            return {
-                ...logo,
-                rotation: action.value,
-            };
-
-        case 'SET_STROKE_WIDTH':
-            return {
-                ...logo,
-                strokeWidth: action.value,
-            };
-
-        case 'SET_STROKE_COLOR':
-            return {
-                ...logo,
-                strokeColor: action.value,
-            };
-
-        case 'SET_FILL_COLOR':
-            return {
-                ...logo,
-                fillColor: action.value,
-            };
-
-        case 'SET_IS_FILLED':
-            return {
-                ...logo,
-                isFilled: action.value,
-            };
-
-        case 'SET_BORDER_RADIUS':
-            return {
-                ...logo,
-                borderRadius: action.value,
-            };
-
-        case 'SET_BACKGROUND_COLOR':
-            return {
-                ...logo,
-                backgroundColor: action.value,
-            };
-
-        case 'SET_SHADOW':
-            return {
-                ...logo,
-                shadow: action.value,
-            };
-
-        case 'IS_GRADIENT_BACKGROUND':
-            return {
-                ...logo,
-                isGradientBackground: action.value,
-            };
-
-        default:
-            throw new Error();
-    }
 };
 
 const INITIAL_LOGO: Logo = {
@@ -193,6 +87,7 @@ export const AppContext = createContext<ContextProps>({
     setIsGradientBackground: () => false,
     setShadow: () => '',
     logoRef: null,
+    undo: () => {},
 });
 
 export default function AppProvider({
@@ -201,57 +96,125 @@ export default function AppProvider({
     children: React.ReactNode;
 }) {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-    const [logo, dispatch] = useReducer(reducer, INITIAL_LOGO);
+    // Use useLocalStorage to get the initial state
+    const [logoHistory, setLogoHistory] = useLocalStorage('logoHistory', {
+        past: [] as Logo[],
+        present: INITIAL_LOGO,
+        future: [] as Logo[],
+    });
+
+    console.log('logo history from context', logoHistory);
+
     const logoRef = useRef<HTMLDivElement>(null);
+    // Update local storage whenever the state changes
 
     const setIconSize = (value: number) => {
-        dispatch({ type: 'SET_ICON_SIZE', value });
+        setLogoHistory({
+            past: [],
+            present: { ...logoHistory.present, size: value },
+            future: [],
+        });
     };
 
     const setIconRotation = (value: number) => {
-        dispatch({ type: 'SET_ICON_ROTATION', value });
+        setLogoHistory({
+            past: [],
+            present: { ...logoHistory.present, rotation: value },
+            future: [],
+        });
     };
 
     const setStrokeWidth = (value: number) => {
-        dispatch({ type: 'SET_STROKE_WIDTH', value });
+        setLogoHistory({
+            past: [],
+            present: { ...logoHistory.present, strokeWidth: value },
+            future: [],
+        });
     };
 
     const setStrokeColor = (value: string) => {
-        dispatch({ type: 'SET_STROKE_COLOR', value });
+        setLogoHistory({
+            past: [],
+            present: { ...logoHistory.present, strokeColor: value },
+            future: [],
+        });
     };
 
     const setFillColor = (value: string) => {
-        dispatch({ type: 'SET_FILL_COLOR', value });
+        setLogoHistory({
+            past: [],
+            present: { ...logoHistory.present, fillColor: value },
+            future: [],
+        });
     };
 
     const setIsFilled = (value: boolean) => {
-        dispatch({ type: 'SET_IS_FILLED', value });
+        setLogoHistory({
+            past: [],
+            present: { ...logoHistory.present, isFilled: value },
+            future: [],
+        });
     };
 
     const setBorderRadius = (value: number) => {
-        dispatch({ type: 'SET_BORDER_RADIUS', value });
+        setLogoHistory({
+            past: [],
+            present: { ...logoHistory.present, borderRadius: value },
+            future: [],
+        });
     };
 
     const setBackgroundColor = (value: string) => {
-        dispatch({ type: 'SET_BACKGROUND_COLOR', value });
+        setLogoHistory({
+            past: [],
+            present: { ...logoHistory.present, backgroundColor: value },
+            future: [],
+        });
     };
 
     const setLogoIcon = useCallback((value: string) => {
-        dispatch({ type: 'SET_LOGO_ICON', value });
+        setLogoHistory({
+            past: [],
+            present: { ...logoHistory.present, icon: value },
+            future: [],
+        });
     }, []);
 
     const setIsGradientBackground = useCallback((value: boolean) => {
-        dispatch({ type: 'IS_GRADIENT_BACKGROUND', value });
+        setLogoHistory({
+            past: [],
+            present: { ...logoHistory.present, isGradientBackground: value },
+            future: [],
+        });
     }, []);
 
     const setShadow = (value: string) => {
-        dispatch({ type: 'SET_SHADOW', value });
+        setLogoHistory({
+            past: [],
+            present: { ...logoHistory.present, shadow: value },
+            future: [],
+        });
+    };
+    const setLogo = (value: Logo) => {
+        setLogoHistory({
+            past: [],
+            present: value,
+            future: [],
+        });
+    };
+
+    const undo = () => {
+        setLogoHistory({
+            past: logoHistory.past.slice(0, -1),
+            present: logoHistory.past[logoHistory.past.length - 1],
+            future: [logoHistory.present, ...logoHistory.future],
+        });
     };
 
     return (
         <AppContext.Provider
             value={{
-                logo,
+                logo: logoHistory.present,
                 sidebarOpen,
                 setSidebarOpen,
                 setIconSize,
@@ -265,6 +228,8 @@ export default function AppProvider({
                 setLogoIcon,
                 setIsGradientBackground,
                 setShadow,
+                undo,
+
                 logoRef,
             }}
         >

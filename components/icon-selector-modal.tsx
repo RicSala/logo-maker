@@ -15,6 +15,8 @@ export function IconSelectorModal({}: IconSelectorModalProps) {
     const [isOpen, setIsOpen] = useState(false);
     const { logo } = useContext(AppContext);
 
+    console.log('logo from iconselector modal', logo);
+
     const closeDialog = useCallback(() => {
         setIsOpen(false);
     }, []);

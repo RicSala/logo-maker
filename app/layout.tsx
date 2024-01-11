@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/sonner';
 import Theme from '@/providers/theme-provider';
 import AppProvider from '@/providers/app-provider';
 import { primaryFont } from '@/config/fonts';
+import { ClientOnly } from '@/components/utils/client-only';
 
 export const metadata: Metadata = {
     title: 'Create Next App',
@@ -26,7 +27,9 @@ export default function RootLayout({
                         enableSystem
                         disableTransitionOnChange
                     >
-                        <AppProvider>{children}</AppProvider>
+                        <ClientOnly>
+                            <AppProvider>{children}</AppProvider>
+                        </ClientOnly>
                     </Theme>
                 </body>
                 <Toaster />
