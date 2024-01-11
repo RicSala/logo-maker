@@ -1,5 +1,6 @@
 import { HistoryState, Logo } from '@/providers/app-provider';
 import { type ClassValue, clsx } from 'clsx';
+import { Dispatch, SetStateAction } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -100,11 +101,14 @@ export const updateArray = <T>(
     return newHistory;
 };
 
+/**
+ * Given a history object, it will update it with the new present, use it as argument in the callback and return the new history object
+ */
 export const updateHistory = <T>(
     history: HistoryState<T>,
-    maxSnapshots: number
+    maxSnapshots: number,
+    setHistory: Dispatch<SetStateAction<{ past: T[]; present: T; future: T[] }>>
 ) => {
-    console.log('updateHistory');
     let newHistory: HistoryState<T> = {
         past: [],
         present: {} as T,
@@ -124,5 +128,57 @@ export const updateHistory = <T>(
         newHistory.past.shift();
     }
 
+    setHistory(newHistory);
+
     return newHistory;
 };
+
+/**
+ * Given a function and a time in miliseconds, it will return a new function that will be throttled
+ */
+export const throttledFunction = <T extends (...args: any[]) => any>(
+    func: T,
+    waitFor: number
+) => {
+    // This variable will hold the reference to the last execution time
+    //   This variable is local to the returned function because of the closure, so it won't change between calls
+    let lastExecutionTime: number = Date.now() - waitFor; // We are kind of lying, but it's to avoid the first execution to be throttled
+
+    // Return a new function that will throttle the execution of 'func'
+    return (...args: Parameters<T>) => {
+        const now = Date.now();
+        // Check if 'waitFor' time has elapsed since the last execution
+        if (now - lastExecutionTime >= waitFor) {
+            // the first time this will always be true
+            lastExecutionTime = now;
+            func(...args);
+        }
+    };
+};
+
+/**
+ * Leading-edge Throttle function. Executes the passed function immediately on the first call,
+ * then ignores subsequent calls within the 'waitFor' period.
+ */
+export function leadingEdgeThrottledFunction<T extends (...args: any[]) => any>(
+    func: T,
+    waitFor: number
+) {
+    // This variable will hold the reference to whether the function is in the cooldown period
+    let inCooldown = false; // This variable is local to the returned function because of the closure, so once we have created a throttled function, each function will have its own cooldown period / variable
+
+    // Return a new function that will throttle the execution of 'func'
+    return (...args: Parameters<T>) => {
+        // Check if the function is in cooldown period, if so do nothing
+        if (inCooldown) return;
+
+        // If not in cooldown, call the function
+        func(...args);
+        // and start the cooldown period (set 'inCooldown' to true)
+        inCooldown = true;
+        // Set a timeout to reset the cooldown period after 'waitFor' milliseconds
+        setTimeout(() => {
+            inCooldown = false;
+        }, waitFor);
+    };
+}

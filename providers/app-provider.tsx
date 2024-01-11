@@ -12,7 +12,12 @@ import {
 } from 'react';
 
 import { useLocalStorage, useHistoryState } from '@uidotdev/usehooks';
-import { updateHistory } from '@/lib/utils';
+import {
+    debouncedFunction,
+    leadingEdgeThrottledFunction,
+    throttledFunction,
+    updateHistory,
+} from '@/lib/utils';
 
 export type HistoryState<T> = {
     past: T[];
@@ -95,23 +100,50 @@ export default function AppProvider({
 }) {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
     // Use useLocalStorage to get the initial state
-    const [logoHistory, setLogoHistory] = useLocalStorage('logoHistory', {
-        past: [] as Logo[],
-        present: INITIAL_LOGO,
-        future: [] as Logo[],
-    });
+    const [logoHistory, originalSetLogoHistory] = useLocalStorage(
+        'logoHistory',
+        {
+            past: [] as Logo[],
+            present: INITIAL_LOGO,
+            future: [] as Logo[],
+        }
+    );
 
     // console.log('logo history from context', logoHistory);
 
-    // REVIEW: how do we know if a function coming from a third party library is memoized? stable?
-    const setLogoHistoryWithDebouncedUpdate = useCallback(
-        (newHistory: HistoryState<Logo>) => {
-            // first we save the logo as usual
-            setLogoHistory(newHistory);
+    const throttledUpdateHistoryRef = useRef(
+        leadingEdgeThrottledFunction(updateHistory<Logo>, 500)
+    );
 
-            newHistory = updateHistory(newHistory, 5);
+    // REVIEW: how do we know if a function coming from a third party library is memoized? stable?
+    const setLogoHistory = useCallback(
+        (newHistory: HistoryState<Logo>) => {
+            const stalePresent = JSON.parse(
+                JSON.stringify(logoHistory.present)
+            );
+
+            // first we save the logo as usual (We change the present)
+            originalSetLogoHistory(newHistory);
+            // then we update the history, but we debounce it so it doesn't get called too often
+            throttledUpdateHistoryRef.current(
+                {
+                    ...newHistory,
+                    present: stalePresent, // REVIEW: This smells bad. Is there a better way to do this?
+                },
+                10,
+                originalSetLogoHistory
+            );
+
+            // if the past is equal to the present, delete the last item in the past
+            if (
+                JSON.stringify(newHistory.past[newHistory.past.length - 1]) ===
+                JSON.stringify(newHistory.present)
+            ) {
+                newHistory.past = [...newHistory.past].slice(0, -1);
+                originalSetLogoHistory(newHistory);
+            }
         },
-        [setLogoHistory]
+        [logoHistory.present, originalSetLogoHistory]
     );
 
     const logoRef = useRef<HTMLDivElement>(null);
@@ -128,97 +160,135 @@ export default function AppProvider({
     };
 
     const setIconRotation = (value: number) => {
-        setLogoHistory({
-            past: [],
+        let newHistory: HistoryState<Logo> = {
+            // REVIEW: Probably need a deep copy here
+            past: [...logoHistory.past],
             present: { ...logoHistory.present, rotation: value },
-            future: [],
-        });
+            future: [...logoHistory.future],
+        };
+        setLogoHistory(newHistory);
     };
 
     const setStrokeWidth = (value: number) => {
-        setLogoHistory({
-            past: [],
+        let newHistory: HistoryState<Logo> = {
+            // REVIEW: Probably need a deep copy here
+            past: [...logoHistory.past],
             present: { ...logoHistory.present, strokeWidth: value },
-            future: [],
-        });
+            future: [...logoHistory.future],
+        };
+        setLogoHistory(newHistory);
     };
 
     const setStrokeColor = (value: string) => {
-        setLogoHistory({
-            past: [],
+        let newHistory: HistoryState<Logo> = {
+            // REVIEW: Probably need a deep copy here
+            past: [...logoHistory.past],
             present: { ...logoHistory.present, strokeColor: value },
-            future: [],
-        });
+            future: [...logoHistory.future],
+        };
+        setLogoHistory(newHistory);
     };
 
     const setFillColor = (value: string) => {
-        setLogoHistory({
-            past: [],
+        let newHistory: HistoryState<Logo> = {
+            // REVIEW: Probably need a deep copy here
+            past: [...logoHistory.past],
             present: { ...logoHistory.present, fillColor: value },
-            future: [],
-        });
+            future: [...logoHistory.future],
+        };
+        setLogoHistory(newHistory);
     };
 
     const setIsFilled = (value: boolean) => {
-        setLogoHistory({
-            past: [],
+        console.log('IS FILLED from the setter', logoHistory.present.isFilled);
+        console.log('IS FILLED', value);
+        let newHistory: HistoryState<Logo> = {
+            // REVIEW: Probably need a deep copy here
+            past: [...logoHistory.past],
             present: { ...logoHistory.present, isFilled: value },
-            future: [],
-        });
+            future: [...logoHistory.future],
+        };
+        setLogoHistory(newHistory);
     };
 
     const setBorderRadius = (value: number) => {
-        setLogoHistory({
-            past: [],
+        let newHistory: HistoryState<Logo> = {
+            // REVIEW: Probably need a deep copy here
+            past: [...logoHistory.past],
             present: { ...logoHistory.present, borderRadius: value },
-            future: [],
-        });
+            future: [...logoHistory.future],
+        };
+        setLogoHistory(newHistory);
     };
 
     const setBackgroundColor = (value: string) => {
-        setLogoHistory({
-            past: [],
+        let newHistory: HistoryState<Logo> = {
+            // REVIEW: Probably need a deep copy here
+            past: [...logoHistory.past],
             present: { ...logoHistory.present, backgroundColor: value },
-            future: [],
-        });
+            future: [...logoHistory.future],
+        };
+        setLogoHistory(newHistory);
     };
 
-    const setLogoIcon = useCallback((value: string) => {
-        setLogoHistory({
-            past: [],
+    const setLogoIcon = (value: string) => {
+        let newHistory: HistoryState<Logo> = {
+            // REVIEW: Probably need a deep copy here
+            past: [...logoHistory.past],
             present: { ...logoHistory.present, icon: value },
-            future: [],
-        });
-    }, []);
+            future: [...logoHistory.future],
+        };
+        setLogoHistory(newHistory);
+    };
 
-    const setIsGradientBackground = useCallback((value: boolean) => {
-        setLogoHistory({
-            past: [],
-            present: { ...logoHistory.present, isGradientBackground: value },
-            future: [],
-        });
-    }, []);
+    const setIsGradientBackground = (value: boolean) => {
+        // deep copy the logo history
+        let newHistory: HistoryState<Logo> = JSON.parse(
+            JSON.stringify(logoHistory)
+        );
+
+        newHistory = {
+            past: [...newHistory.past],
+            present: { ...newHistory.present, isGradientBackground: value },
+            future: [...newHistory.future],
+        };
+
+        setLogoHistory(newHistory);
+    };
 
     const setShadow = (value: string) => {
-        setLogoHistory({
-            past: [],
+        let newHistory: HistoryState<Logo> = {
+            // REVIEW: Probably need a deep copy here
+            past: [...logoHistory.past],
             present: { ...logoHistory.present, shadow: value },
-            future: [],
-        });
-    };
-    const setLogo = (value: Logo) => {
-        setLogoHistory({
-            past: [],
-            present: value,
-            future: [],
-        });
+            future: [...logoHistory.future],
+        };
+        setLogoHistory(newHistory);
     };
 
     const undo = () => {
-        setLogoHistory({
-            past: logoHistory.past.slice(0, -1),
-            present: logoHistory.past[logoHistory.past.length - 1],
-            future: [logoHistory.present, ...logoHistory.future],
+        // deep copy the logo history
+        const newHistory: HistoryState<Logo> = JSON.parse(
+            JSON.stringify(logoHistory)
+        );
+
+        // If the past is equal to the present, then we need to go back one more step
+        // TODO: This should probably be done in the updater itself
+        if (
+            JSON.stringify(newHistory.past[newHistory.past.length - 1]) ===
+            JSON.stringify(newHistory.present)
+        ) {
+            newHistory.past = newHistory.past.slice(0, -1);
+        }
+
+        // if there is not past, then we can't undo
+        if (newHistory.past.length === 0) return;
+
+        originalSetLogoHistory({
+            past: newHistory.past.slice(0, -1),
+            present: newHistory.past[newHistory.past.length - 1],
+            future: [],
+            // future: [logoHistory.present, ...logoHistory.future],
         });
     };
 

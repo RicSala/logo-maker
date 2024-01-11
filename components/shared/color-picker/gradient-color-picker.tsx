@@ -27,7 +27,6 @@ export function GradientColorPicker({}) {
     // REVIEW: CHECK WITH COMEAU. I don't like this pattern of controlling a state with a useEffect and syncing it with another state.
     //  What should be the best way to do this? Should lift the hook to the context? isn't that an overkill?
     useEffect(() => {
-        console.log('isGradient', isGradient);
         setIsGradientBackground(isGradient);
     }, [isGradient, setIsGradientBackground]);
 
@@ -100,7 +99,6 @@ const GradientSettings = ({
     setLinear,
     setRadial,
 }: GradientSettingsProps) => {
-    console.log({ gradientType });
     return (
         <div className='flex flex-col gap-2'>
             <div className='flex items-center space-x-2 justify-center rbgcp-control-icon-bt'>
