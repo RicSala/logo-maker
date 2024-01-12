@@ -4,7 +4,7 @@ import { kebabCaseToCapitlizedCamelCase, kebabCaseToString } from '@/lib/utils';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
-import IconComp from './lucide-icon';
+import IconComp from './icon-comp';
 import { useCallback, useContext, useState } from 'react';
 import IconSelector from './icon-selector';
 import { AppContext } from '@/providers/app/app-provider';

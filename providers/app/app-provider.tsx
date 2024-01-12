@@ -52,6 +52,7 @@ export const AppContext = createContext<ContextProps>({
     logoRef: null,
     undo: () => {},
     redo: () => {},
+    setNewLogo: () => {},
 });
 
 export default function AppProvider({
@@ -97,6 +98,17 @@ export default function AppProvider({
         },
         [originalSetLogoHistory]
     );
+
+    const setNewLogo = (newLogo: Logo) => {
+        const stalePresent = deepCopy(logoHistory.present);
+        let newHistory: HistoryState<Logo> = {
+            // REVIEW: Probably need a deep copy here
+            past: [...logoHistory.past],
+            present: newLogo,
+            future: [...logoHistory.future],
+        };
+        setLogoHistory(newHistory, stalePresent);
+    };
 
     // Instead of creating a function for each setter, we create a generic function and bind it to property we want to set
     const setProperty = (
@@ -177,6 +189,7 @@ export default function AppProvider({
                 setShadow,
                 undo,
                 redo,
+                setNewLogo,
 
                 logoRef,
             }}

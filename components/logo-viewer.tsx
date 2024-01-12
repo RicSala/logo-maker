@@ -8,7 +8,8 @@ import {
 } from './ui/tooltip';
 import { useContext, useRef } from 'react';
 import { AppContext } from '@/providers/app/app-provider';
-import IconComp from './lucide-icon';
+import IconComp from './icon-comp';
+import { Logo } from './logo';
 
 type LogoViewerProps = {
     className?: string;
@@ -46,63 +47,13 @@ export const WorkBench = ({ className }: WorkBenchProps) => {
                             id='workbench'
                             className='aspect-square w-[400px] bg-slate-200/30
                             border-2
-
                         hover:border-dashed
                         hover:bg-slate-200/40
                         hover:border-2
                         hover:border-slate-300
-                        flex justify-center items-center
-                        
-                        '
+                        flex justify-center items-center'
                         >
-                            <div
-                                className='w-full h-full flex justify-center items-center'
-                                ref={logoRef}
-                            >
-                                <div
-                                    style={{
-                                        backgroundImage:
-                                            logo.isGradientBackground
-                                                ? logo.backgroundColor
-                                                : undefined,
-                                        backgroundColor:
-                                            !logo.isGradientBackground
-                                                ? logo.backgroundColor
-                                                : undefined,
-                                        borderRadius: `${logo.borderRadius}px`,
-                                    }}
-                                    className={`
-                            rounded-[20px]
-                            h-[80%]
-                            w-[80%]
-                            flex justify-center items-center
-                            overflow-hidden
-                            `}
-                                >
-                                    <div className='w-full h-full flex items-center justify-center'>
-                                        <span>
-                                            <IconComp
-                                                name={kebabCaseToCapitlizedCamelCase(
-                                                    logo.icon
-                                                )}
-                                                style={{
-                                                    transform: `rotate(${logo.rotation}deg)`,
-                                                    strokeWidth: `${logo.strokeWidth}px`,
-                                                    stroke: `${logo.strokeColor}`,
-                                                    fill: `${
-                                                        logo.isFilled
-                                                            ? logo.fillColor
-                                                            : 'none'
-                                                    }`,
-                                                }}
-                                                width={logo.size}
-                                                height={logo.size}
-                                                viewBox='0 0 24 24'
-                                            />
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                            <Logo logo={logo} logoRef={logoRef} />
                         </div>
                     </TooltipTrigger>
                     <TooltipContent>Esta es la zona de descarga</TooltipContent>

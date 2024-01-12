@@ -20,7 +20,7 @@ export function BackgroundSettings({}) {
                 value={logo.borderRadius}
                 onChange={setBorderRadius}
                 min={0}
-                max={200}
+                max={100}
             />
             <GradientColorPicker />
         </div>

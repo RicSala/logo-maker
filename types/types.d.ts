@@ -1,3 +1,5 @@
+import { Logo } from '@/providers/app/types';
+
 export type HttpStatusCode = 200 | 201 | 400 | 401 | 404 | 500; // Extend as needed
 
 export type PaginationInfo = {
@@ -51,4 +53,17 @@ export type ApiRequestBody<
 > = {
     data: T;
     action: A;
+};
+
+/**
+ * Utility type: Make all the properties of an object nullable
+ */
+export type Nullable<T> = {
+    [P in keyof T]: T[P] | null;
+};
+
+export type Preset = Nullable<Logo> & {
+    description?: string;
+    id: string;
+    name: string;
 };

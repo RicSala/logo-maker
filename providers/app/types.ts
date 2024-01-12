@@ -24,6 +24,7 @@ export interface ContextProps {
     logoRef: React.RefObject<HTMLDivElement> | null;
     undo: () => void;
     redo: () => void;
+    setNewLogo: (value: Logo) => void;
 }
 
 export type Logo = {

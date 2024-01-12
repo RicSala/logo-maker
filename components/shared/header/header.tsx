@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useAppProvider } from '@/providers/app/app-provider';
 import { Menu, Redo, Undo } from 'lucide-react';
 import { useState } from 'react';
+import { Presets } from '@/components/presets/presets';
 
 export default function Header() {
     const { sidebarOpen, setSidebarOpen, undo, redo } = useAppProvider();
@@ -69,6 +70,7 @@ export default function Header() {
                         {/*  Divider */}
                         <hr className='w-px h-6 bg-slate-200 dark:bg-slate-700 border-none' />
                         {/* <DropdownProfile align='right' /> */}
+                        <Presets />
                         <Button
                             onClick={() => {
                                 console.log('undoing...');

@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 import { Button } from './ui/button';
 import IconGrid from './icon-selector';
 import { kebabCaseToCapitlizedCamelCase, kebabCaseToString } from '@/lib/utils';
-import IconComp from './lucide-icon';
+import IconComp from './icon-comp';
 import { IconSelectorModal } from './icon-selector-modal';
 
 export function IconSettings({}) {
