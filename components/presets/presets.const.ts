@@ -200,3 +200,59 @@ export const PRESETS: Preset[] = [
         strokeWidth: 2,
     },
 ];
+
+export const IA_PRESET_EXAMPLES: Preset[] = [
+    {
+        id: 'minimalist-dream',
+        name: 'Minimalist Dream',
+        description:
+            'Best for businesses valuing minimalism and simplicity, with a clean and understated look.',
+        backgroundColor: '#ecf0f1',
+        borderRadius: 0,
+        fillColor: '#bdc3c7',
+        icon: 'play-circle',
+        isFilled: false,
+        isGradientBackground: false,
+        rotation: 0,
+        shadow: '1px 1px 3px rgba(0,0,0,0.2)',
+        size: 25,
+        strokeColor: '#6a7171',
+        strokeWidth: 2,
+    },
+    {
+        id: 'modern-tech',
+        name: 'Modern Tech',
+        description:
+            'Ideal for technology companies seeking a modern and dynamic image with a sleek, futuristic appeal.',
+        backgroundColor:
+            'linear-gradient(120deg, rgba(26,188,156,1) 0%, rgba(46,204,113,1) 100%)',
+        borderRadius: 15,
+        fillColor: '#2c3e50',
+        icon: 'chef-hat',
+        isFilled: false,
+        isGradientBackground: true,
+        rotation: 10,
+        shadow: '3px 3px 8px rgba(0,0,0,0.3)',
+        size: 25,
+        strokeColor: '#003028',
+        strokeWidth: 2,
+    },
+    // Preset 14
+    {
+        id: 'sunny-side',
+        name: 'Sunny Side',
+        description:
+            'Great for upbeat, youthful brands, especially in the food or hospitality industry, radiating warmth and positivity.',
+        backgroundColor: '#f39c12',
+        borderRadius: 5,
+        fillColor: '#f1c40f',
+        icon: 'lightbulb',
+        isFilled: true,
+        isGradientBackground: false,
+        rotation: 45,
+        shadow: '4px 4px 12px rgba(0,0,0,0.2)',
+        size: 25,
+        strokeColor: '#b86114',
+        strokeWidth: 1,
+    },
+];

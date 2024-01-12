@@ -30,7 +30,7 @@ type PresetButtonProps = {
     preset: Preset;
 };
 
-const PresetButton = ({ preset }: PresetButtonProps) => {
+export const PresetButton = ({ preset }: PresetButtonProps) => {
     const { logo, setNewLogo } = useContext(AppContext);
     const appliedPresetLogo = applyPreset(preset, logo);
     return (

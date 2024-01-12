@@ -6,6 +6,7 @@ import { useAppProvider } from '@/providers/app/app-provider';
 import { Menu, Redo, Undo } from 'lucide-react';
 import { useState } from 'react';
 import { Presets } from '@/components/presets/presets';
+import { IaPreset } from '@/components/presets/ia-preset';
 
 export default function Header() {
     const { sidebarOpen, setSidebarOpen, undo, redo } = useAppProvider();
@@ -71,6 +72,7 @@ export default function Header() {
                         <hr className='w-px h-6 bg-slate-200 dark:bg-slate-700 border-none' />
                         {/* <DropdownProfile align='right' /> */}
                         <Presets />
+                        <IaPreset />
                         <Button
                             onClick={() => {
                                 console.log('undoing...');
