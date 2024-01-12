@@ -1,4 +1,4 @@
-import { Logo } from './app-provider';
+import { Logo } from './types';
 
 export const reducer = (logo: Logo, action: LogoAction) => {
     switch (action.type) {

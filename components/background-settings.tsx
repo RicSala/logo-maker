@@ -3,7 +3,7 @@
 import { useContext } from 'react';
 import { ColorPicker } from './shared/color-picker/color-picker';
 import { SliderWithLabel } from './shared/slider-with-label';
-import { AppContext } from '@/providers/app-provider';
+import { AppContext } from '@/providers/app/app-provider';
 import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 import { set } from 'zod';

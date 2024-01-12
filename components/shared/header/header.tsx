@@ -2,18 +2,12 @@
 
 import { DownloadButton } from '@/components/downloadButton';
 import { Button } from '@/components/ui/button';
-import { useAppProvider } from '@/providers/app-provider';
-import { Menu, Undo } from 'lucide-react';
+import { useAppProvider } from '@/providers/app/app-provider';
+import { Menu, Redo, Undo } from 'lucide-react';
 import { useState } from 'react';
 
-// import SearchModal from '@/components/search-modal'
-// import Notifications from '@/components/dropdown-notifications'
-// import DropdownHelp from '@/components/dropdown-help'
-// import ThemeToggle from '@/components/theme-toggle'
-// import DropdownProfile from '@/components/dropdown-profile'
-
 export default function Header() {
-    const { sidebarOpen, setSidebarOpen, undo } = useAppProvider();
+    const { sidebarOpen, setSidebarOpen, undo, redo } = useAppProvider();
     const [searchModalOpen, setSearchModalOpen] = useState<boolean>(false);
 
     return (
@@ -82,6 +76,14 @@ export default function Header() {
                             }}
                         >
                             <Undo size={24} onClick={undo} />
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                console.log('undoing...');
+                                redo();
+                            }}
+                        >
+                            <Redo size={24} onClick={undo} />
                         </Button>
                         <DownloadButton />
                     </div>

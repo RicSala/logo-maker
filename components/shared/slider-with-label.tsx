@@ -3,7 +3,7 @@
 import { useContext } from 'react';
 import { Label } from '../ui/label';
 import { Slider } from '../ui/slider';
-import { AppContext } from '@/providers/app-provider';
+import { AppContext } from '@/providers/app/app-provider';
 
 type SliderWithLabelProps = {
     label: string;

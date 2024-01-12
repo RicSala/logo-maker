@@ -7,7 +7,7 @@ import { Button } from './ui/button';
 import IconComp from './lucide-icon';
 import { useCallback, useContext, useState } from 'react';
 import IconSelector from './icon-selector';
-import { AppContext } from '@/providers/app-provider';
+import { AppContext } from '@/providers/app/app-provider';
 
 type IconSelectorModalProps = {};
 

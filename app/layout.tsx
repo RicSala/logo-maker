@@ -3,7 +3,7 @@ import './globals.css';
 import SessionProvider from '@/providers/session-provider';
 import { Toaster } from '@/components/ui/sonner';
 import Theme from '@/providers/theme-provider';
-import AppProvider from '@/providers/app-provider';
+import AppProvider from '@/providers/app/app-provider';
 import { primaryFont } from '@/config/fonts';
 import { ClientOnly } from '@/components/utils/client-only';
 

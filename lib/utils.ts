@@ -1,4 +1,4 @@
-import { HistoryState, Logo } from '@/providers/app-provider';
+import { HistoryState, Logo } from '@/providers/app/types';
 import { type ClassValue, clsx } from 'clsx';
 import { Dispatch, SetStateAction } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -105,6 +105,7 @@ export const updateArray = <T>(
  * Given a history object, it will update it with the new present, use it as argument in the callback and return the new history object
  */
 export const updateHistory = <T>(
+    stalePresent: T,
     history: HistoryState<T>,
     maxSnapshots: number,
     setHistory: Dispatch<SetStateAction<{ past: T[]; present: T; future: T[] }>>
@@ -115,12 +116,17 @@ export const updateHistory = <T>(
         future: [],
     };
 
+    console.log('upadting history');
+    console.log('history from updateHistory', { history });
+    console.log('stalePresent from updateHistory', { stalePresent });
+    console.log('maxSnapshots from updateHistory', { maxSnapshots });
+
     // create a deep copy of the history, in case it is a state object
-    newHistory = JSON.parse(JSON.stringify(history));
+    newHistory = deepCopy(history);
 
     // if there is something in the present, add it to the past
     if (newHistory.present !== null && newHistory.present !== undefined) {
-        newHistory.past = [...newHistory.past, newHistory.present];
+        newHistory.past = [...newHistory.past, stalePresent];
     }
 
     // if after adding the present to the past, the past is too long, remove the first element
@@ -173,6 +179,7 @@ export function leadingEdgeThrottledFunction<T extends (...args: any[]) => any>(
         if (inCooldown) return;
 
         // If not in cooldown, call the function
+        console.log('calling throttled function');
         func(...args);
         // and start the cooldown period (set 'inCooldown' to true)
         inCooldown = true;
@@ -182,3 +189,7 @@ export function leadingEdgeThrottledFunction<T extends (...args: any[]) => any>(
         }, waitFor);
     };
 }
+
+export const deepCopy = (obj: Record<any, any>) => {
+    return JSON.parse(JSON.stringify(obj));
+};

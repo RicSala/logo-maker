@@ -13,7 +13,7 @@ import {
     useState,
 } from 'react';
 import { useDebouncedValue } from '@mantine/hooks';
-import { AppContext } from '@/providers/app-provider';
+import { AppContext } from '@/providers/app/app-provider';
 import { Button } from './ui/button';
 
 type IconProps = {
