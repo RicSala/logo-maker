@@ -1,3 +1,4 @@
+import { CompanyDescriptionSchema } from '@/components/presets/ia-preset';
 import { Logo } from '@/providers/app/types';
 
 export type HttpStatusCode = 200 | 201 | 400 | 401 | 404 | 500; // Extend as needed
@@ -34,7 +35,7 @@ export type ApiResponse<T = undefined, E = ApiError> =
     | {
           statusCode: HttpStatusCode;
           message: string;
-          data: T | undefined;
+          data: T;
           ok: true;
           meta?: any; // Additional metadata
           pagination?: PaginationInfo;
@@ -45,14 +46,12 @@ export type ApiResponse<T = undefined, E = ApiError> =
           ok: false;
           error: E;
           meta?: any; // Additional metadata
+          data: T;
       };
 
-export type ApiRequestBody<
-    T = undefined,
-    A = 'CREATE' | 'UPDATE' | 'DELETE' | 'INVITE' | 'EXIT'
-> = {
+export type ApiRequestBody<T = undefined> = {
     data: T;
-    action: A;
+    action: apiAction;
 };
 
 /**
@@ -66,4 +65,17 @@ export type Preset = Nullable<Logo> & {
     description?: string;
     id: string;
     name: string;
+};
+
+/**
+ * Utility type: Make the type "loose", meaning it can be the given type or any string
+ */
+export type Loose<T> = T | (string & {});
+
+// Define a map of the actions and their corresponding request and response data types
+type PresetsApiMap = {
+    GENERATE: {
+        reqData: GenereteFormValues;
+        resData: string;
+    };
 };

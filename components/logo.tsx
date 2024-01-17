@@ -35,7 +35,10 @@ export function Logo({ logo, logoRef }: LogoViewerProps) {
                             `}
             >
                 <div className='w-full h-full flex items-center justify-center'>
-                    <span>
+                    <span
+                        className='
+                    '
+                    >
                         <IconComp
                             name={kebabCaseToCapitlizedCamelCase(logo.icon)}
                             style={{

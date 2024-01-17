@@ -237,7 +237,6 @@ export const IA_PRESET_EXAMPLES: Preset[] = [
         strokeColor: '#003028',
         strokeWidth: 2,
     },
-    // Preset 14
     {
         id: 'sunny-side',
         name: 'Sunny Side',

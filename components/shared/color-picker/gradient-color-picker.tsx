@@ -59,6 +59,7 @@ export function GradientColorPicker({}) {
                 hideGradientStop
                 // hideGradientControls
                 hideAdvancedSliders
+                hideOpacity
                 hideColorGuide
                 height={200}
             />

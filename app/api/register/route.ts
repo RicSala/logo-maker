@@ -114,4 +114,4 @@ export type RegisterRes<A extends RouteActions> = // Generic type whose value is
     ApiResponse<RouteApiMap[A]['resData']>;
 
 export type RegisterReq<A extends RouteActions> = // Generic type whose value is one of the actions
-    ApiRequestBody<RouteApiMap[A]['reqData'], A>;
+    ApiRequestBody<RouteApiMap[A]['reqData']>;

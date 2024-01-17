@@ -3,7 +3,7 @@ import { Logo as LogoType } from '@/providers/app/types';
 import { PRESETS } from './presets.const';
 import { Logo } from '../logo';
 import IconComp from '../icon-comp';
-import { kebabCaseToCapitlizedCamelCase } from '@/lib/utils';
+import { cn, kebabCaseToCapitlizedCamelCase } from '@/lib/utils';
 import { useContext } from 'react';
 import { AppContext } from '@/providers/app/app-provider';
 import { Nullable, Preset } from '@/types/types';
@@ -28,9 +28,17 @@ export const Presets = ({ maxPresets = 5 }) => {
 
 type PresetButtonProps = {
     preset: Preset;
+    tooltip?: string;
+    onClick?: () => void;
+    className?: string;
 };
 
-export const PresetButton = ({ preset }: PresetButtonProps) => {
+export const PresetButton = ({
+    preset,
+    tooltip,
+    onClick,
+    className,
+}: PresetButtonProps) => {
     const { logo, setNewLogo } = useContext(AppContext);
     const appliedPresetLogo = applyPreset(preset, logo);
     return (
@@ -38,16 +46,18 @@ export const PresetButton = ({ preset }: PresetButtonProps) => {
             <Tooltip>
                 <TooltipTrigger>
                     <div
-                        className='h-12 w-12'
+                        className={cn(`h-12 w-12`, className)}
                         onClick={() => {
-                            setNewLogo(applyPreset(preset, logo, 200));
+                            onClick
+                                ? onClick()
+                                : setNewLogo(applyPreset(preset, logo, 200));
                         }}
                     >
                         <Logo logo={appliedPresetLogo} />
                     </div>
                 </TooltipTrigger>
                 <TooltipContent className='max-w-md'>
-                    {preset.description}
+                    {tooltip ? tooltip : preset.description}
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
@@ -57,7 +67,7 @@ export const PresetButton = ({ preset }: PresetButtonProps) => {
 /**
  * Given a preset and an a logo, returns the logo with all the properties of the preset applied. The property might be null, in which case it will not be applied. It iterates programatically all the properties. It returns the new logo.
  */
-const applyPreset = (preset: Preset, logo: LogoType, size?: number) => {
+export const applyPreset = (preset: Preset, logo: LogoType, size?: number) => {
     const newLogo = { ...logo };
 
     for (const property in preset) {
