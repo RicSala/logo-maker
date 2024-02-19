@@ -33,11 +33,10 @@ export function GradientColorPicker({
         setDegrees,
     } = useColorPicker(color, setColor);
 
-    // REVIEW: CHECK WITH COMEAU. I don't like this pattern of controlling a state with a useEffect and syncing it with another state.
-    //  What should be the best way to do this? Should lift the hook to the context? isn't that an overkill?
     useEffect(() => {
         setIsGradient(isGradient);
-    }, [isGradient, setIsGradient]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isGradient]);
 
     return (
         <div className='space-y-2'>

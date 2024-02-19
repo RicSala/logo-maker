@@ -145,7 +145,7 @@ export const AIModal = ({ onClose }: { onClose: () => void }) => {
                     presets.map((preset) => (
                         <LogoProposal
                             preset={{ ...preset, size: 60 }}
-                            className='h-40 w-40'
+                            className='h-40 w-40 drop-shadow-md'
                             key={preset.id}
                             onClick={() => {
                                 setNewLogo(applyPreset(preset, logo, 50));

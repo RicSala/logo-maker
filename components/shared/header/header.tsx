@@ -16,8 +16,6 @@ export default function Header() {
         <header className='sticky top-0 bg-white dark:bg-[#182235] border-b border-slate-200 dark:border-slate-700 z-30'>
             <div className='px-2 sm:px-6 lg:px-8'>
                 <div className='flex items-center justify-between p-2 -mb-px flex-col gap-2  lg:flex-row'>
-                    {/* Header: Left side */}
-                    {/* Hamburger button */}
                     <div className='flex gap-2 w-full lg:w-auto'>
                         <Logo />
                         <Button
@@ -27,28 +25,21 @@ export default function Header() {
                                 undo();
                             }}
                         >
-                            <Undo size={24} onClick={undo} />
+                            <Undo size={24} />
                         </Button>
                         <Button
                             onClick={() => {
-                                console.log('undoing...');
+                                console.log('redoing...');
                                 redo();
                             }}
                         >
-                            <Redo size={24} onClick={undo} />
+                            <Redo size={24} />
                         </Button>
                         <DownloadButton />
                     </div>
 
-                    {/* Header: Right side */}
                     <div className='flex items-center space-x-3 md:ml-auto overflow-x-auto max-w-full'>
-                        {/* <Notifications align='right' />
-                        <DropdownHelp align='right' />
-                        <ThemeToggle /> */}
-                        {/*  Divider */}
                         <hr className='w-px h-6 bg-slate-200 dark:bg-slate-700 border-none' />
-                        {/* <DropdownProfile align='right' /> */}
-
                         <Presets />
                         <IaPreset />
                     </div>

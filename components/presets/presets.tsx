@@ -45,13 +45,13 @@ export const PresetButton = ({
     return (
         <TooltipProvider>
             <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                     <div
                         className={cn(`h-12 w-12`, className)}
                         onClick={() => {
                             onClick
                                 ? onClick()
-                                : setNewLogo(applyPreset(preset, logo, 70));
+                                : setNewLogo(applyPreset(preset, logo, 60));
                         }}
                     >
                         <LogoIcon className='w-auto' logo={appliedPresetLogo} />
@@ -84,6 +84,8 @@ export const applyPreset = (preset: Preset, logo: LogoType, size?: number) => {
     if (size) {
         newLogo.size = size;
     }
+
+    newLogo.isFilled = false;
 
     return newLogo;
 };

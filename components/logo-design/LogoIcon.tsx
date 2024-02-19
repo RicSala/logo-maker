@@ -106,7 +106,6 @@ export const LogoIcon = ({
                 aspect-square
                 flex justify-center items-center
                 overflow-hidden
-                cursor-move
                 relative
                 z-10
                 will-change-transform

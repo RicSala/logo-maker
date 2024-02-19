@@ -19,7 +19,7 @@ export const LogoText = ({ logo, className }: LogoTextProps) => {
         <>
             <p
                 className={cn(
-                    `cursor-move
+                    `
                 relative
                 top-0
                 left-0

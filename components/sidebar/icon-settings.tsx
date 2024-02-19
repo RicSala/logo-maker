@@ -65,6 +65,8 @@ export function IconSettings({}) {
                 label='Rotar icono'
                 value={logo.rotation}
                 onChange={setIconRotation}
+                min={-180}
+                max={180}
             />
             <SliderWithLabel
                 label='Grosor de trazo'

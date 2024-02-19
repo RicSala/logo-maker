@@ -106,6 +106,7 @@ export default function AppProvider({
      */
     const setLogoHistory = useCallback(
         (newHistory: HistoryState<Logo>, stalePresent: Logo) => {
+            console.log('setting logo history');
             // deep copy the logo history
             // console.log('NEW HISTORY FROM SET LOGO HISTORY', newHistory);
             // first we save the logo as usual (We change the present)
@@ -123,6 +124,7 @@ export default function AppProvider({
     );
 
     const setNewLogo = (newLogo: Logo) => {
+        console.log('setting new logo');
         const stalePresent = deepCopy(logoHistory.present);
         let newHistory: HistoryState<Logo> = {
             // REVIEW: Probably need a deep copy here
@@ -134,19 +136,23 @@ export default function AppProvider({
     };
 
     // Instead of creating a function for each setter, we create a generic function and bind it to property we want to set
-    const setProperty = (
-        propertyName: keyof Logo,
-        value: string | number | boolean | Position
-    ) => {
-        const stalePresent = deepCopy(logoHistory.present);
-        let newHistory: HistoryState<Logo> = {
-            // REVIEW: Probably need a deep copy here
-            past: [...logoHistory.past],
-            present: { ...logoHistory.present, [propertyName]: value },
-            future: [...logoHistory.future], // Should we clean the future each time we set a new property? Otherwise would could have like a...multiverse of futures lol
-        };
-        setLogoHistory(newHistory, stalePresent);
-    };
+    const setProperty = useCallback(
+        (
+            propertyName: keyof Logo,
+            value: string | number | boolean | Position
+        ) => {
+            const stalePresent = deepCopy(logoHistory.present);
+            let newHistory: HistoryState<Logo> = {
+                // REVIEW: Probably need a deep copy here
+                past: [...logoHistory.past],
+                present: { ...logoHistory.present, [propertyName]: value },
+                future: [], // Should we clean the future each time we set a new property? Otherwise would could have like a...multiverse of futures lol
+            };
+
+            setLogoHistory(newHistory, stalePresent);
+        },
+        [logoHistory, setLogoHistory]
+    );
 
     //
     const setIconSize = setProperty.bind(null, 'size');
@@ -178,22 +184,34 @@ export default function AppProvider({
     const setTextTranslateY = setProperty.bind(null, 'textTranslateY');
 
     const undo = () => {
+        console.log('undoing provider');
         // deep copy the logo history
         const newHistory: HistoryState<Logo> = deepCopy(logoHistory);
         if (newHistory.past.length === 0) return;
+        console.log('logo history greater than zero');
 
         const newFuture = [newHistory.present, ...newHistory.future];
         if (newFuture.length > MAX_REDOS) newFuture.pop();
 
+        // get the past fontColor array
+        const newPast = newHistory.past.slice(0, -1);
+        console.log(
+            newPast.map((logoState) => {
+                return logoState.fontFamily;
+            })
+        );
+
         originalSetLogoHistory({
-            past: newHistory.past.slice(0, -1),
+            past: newPast,
             present: newHistory.past[newHistory.past.length - 1],
             future: newFuture,
             // future: [logoHistory.present, ...logoHistory.future],
         });
+        console.log('history updated');
     };
 
     const redo = () => {
+        console.log('redoing provider');
         let newHistory: HistoryState<Logo> = deepCopy(logoHistory);
         const newPresent = newHistory.future.shift();
         if (!newPresent) return; // there is nothing to redo
@@ -210,6 +228,8 @@ export default function AppProvider({
         <AppContext.Provider
             value={{
                 logo: logoHistory.present,
+                // @ts-ignore
+                logoHistory,
                 setIconTranslateX,
                 setIconTranslateY,
                 setTextTranslateX,
@@ -250,129 +270,3 @@ export default function AppProvider({
 }
 
 export const useAppProvider = () => useContext(AppContext);
-//
-//
-//
-//
-//
-// ####### OLD CODE #######
-
-// (value: number) => {
-//     console.log('SET ICON SIZE', logoHistory.present.size);
-//     const stalePresent = JSON.parse(JSON.stringify(logoHistory.present));
-//     let newHistory: HistoryState<Logo> = {
-//         // REVIEW: Probably need a deep copy here
-//         past: [...logoHistory.past],
-//         present: { ...logoHistory.present, size: value },
-//         future: [...logoHistory.future],
-//     };
-//     console.log('NEW HISTORY', newHistory);
-//     setLogoHistory(newHistory, stalePresent);
-// };
-
-// const setIconRotation = (value: number) => {
-//     let newHistory: HistoryState<Logo> = {
-//         // REVIEW: Probably need a deep copy here
-//         past: [...logoHistory.past],
-//         present: { ...logoHistory.present, rotation: value },
-//         future: [...logoHistory.future],
-//     };
-//     setLogoHistory(newHistory);
-// };
-
-// const setStrokeWidth = (value: number) => {
-//     let newHistory: HistoryState<Logo> = {
-//         // REVIEW: Probably need a deep copy here
-//         past: [...logoHistory.past],
-//         present: { ...logoHistory.present, strokeWidth: value },
-//         future: [...logoHistory.future],
-//     };
-//     setLogoHistory(newHistory);
-// };
-
-// const setStrokeColor = (value: string) => {
-//     let newHistory: HistoryState<Logo> = {
-//         // REVIEW: Probably need a deep copy here
-//         past: [...logoHistory.past],
-//         present: { ...logoHistory.present, strokeColor: value },
-//         future: [...logoHistory.future],
-//     };
-//     setLogoHistory(newHistory);
-// };
-
-// const setFillColor = (value: string) => {
-//     let newHistory: HistoryState<Logo> = {
-//         // REVIEW: Probably need a deep copy here
-//         past: [...logoHistory.past],
-//         present: { ...logoHistory.present, fillColor: value },
-//         future: [...logoHistory.future],
-//     };
-//     setLogoHistory(newHistory);
-// };
-
-// const setIsFilled = (value: boolean) => {
-//     console.log('IS FILLED from the setter', logoHistory.present.isFilled);
-//     console.log('IS FILLED', value);
-//     let newHistory: HistoryState<Logo> = {
-//         // REVIEW: Probably need a deep copy here
-//         past: [...logoHistory.past],
-//         present: { ...logoHistory.present, isFilled: value },
-//         future: [...logoHistory.future],
-//     };
-//     setLogoHistory(newHistory);
-// };
-
-// const setBorderRadius = (value: number) => {
-//     let newHistory: HistoryState<Logo> = {
-//         // REVIEW: Probably need a deep copy here
-//         past: [...logoHistory.past],
-//         present: { ...logoHistory.present, borderRadius: value },
-//         future: [...logoHistory.future],
-//     };
-//     setLogoHistory(newHistory);
-// };
-
-// const setBackgroundColor = (value: string) => {
-//     let newHistory: HistoryState<Logo> = {
-//         // REVIEW: Probably need a deep copy here
-//         past: [...logoHistory.past],
-//         present: { ...logoHistory.present, backgroundColor: value },
-//         future: [...logoHistory.future],
-//     };
-//     setLogoHistory(newHistory);
-// };
-
-// const setLogoIcon = (value: string) => {
-//     let newHistory: HistoryState<Logo> = {
-//         // REVIEW: Probably need a deep copy here
-//         past: [...logoHistory.past],
-//         present: { ...logoHistory.present, icon: value },
-//         future: [...logoHistory.future],
-//     };
-//     setLogoHistory(newHistory);
-// };
-
-// const setIsGradientBackground = (value: boolean) => {
-//     // deep copy the logo history
-//     let newHistory: HistoryState<Logo> = JSON.parse(
-//         JSON.stringify(logoHistory)
-//     );
-
-//     newHistory = {
-//         past: [...newHistory.past],
-//         present: { ...newHistory.present, isGradientBackground: value },
-//         future: [...newHistory.future],
-//     };
-
-//     setLogoHistory(newHistory);
-// };
-
-// const setShadow = (value: string) => {
-//     let newHistory: HistoryState<Logo> = {
-//         // REVIEW: Probably need a deep copy here
-//         past: [...logoHistory.past],
-//         present: { ...logoHistory.present, shadow: value },
-//         future: [...logoHistory.future],
-//     };
-//     setLogoHistory(newHistory);
-// };

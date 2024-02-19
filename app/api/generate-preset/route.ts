@@ -16,6 +16,8 @@ import {
     presetExamplePrompt2,
     presetsExamplePrompt,
 } from '@/prompts';
+import { iconList } from '@/config/icon-list';
+import { object } from 'zod';
 
 export async function POST(req: NextRequest) {
     try {
@@ -40,13 +42,19 @@ export async function POST(req: NextRequest) {
 
                 const response = await generatePreset(description);
 
-                console.log('response', response?.choices[0]?.message?.content);
                 // Narrow the type of resData to the one corresponding to this action
-                resData = JSON.parse(
-                    response?.choices[0]?.message?.content!
-                ) as Preset[];
+                resData = response!;
 
-                console.log(description, 'description');
+                // If there is an icon that is not in the array of icons, change it for the first in the table
+                resData = resData.map((preset) => {
+                    if (
+                        preset.icon &&
+                        !Object.keys(iconList).includes(preset.icon)
+                    ) {
+                        preset.icon = Object.keys(iconList)[0];
+                    }
+                    return preset;
+                });
 
                 return NextResponse.json(resData, { status: 201 });
             default:
@@ -86,7 +94,7 @@ export type GenerateApiResponseBody<A extends RouteActions> = // Pick the respon
 const generatePreset = async (prompt: string) => {
     try {
         console.log('talking to openai');
-        const response = await aiClient.chat.completions.create({
+        const response = aiClient.chat.completions.create({
             max_tokens: 3000,
             model: 'gpt-3.5-turbo-16k',
             messages: [
@@ -96,8 +104,99 @@ const generatePreset = async (prompt: string) => {
                 { role: 'user', content: prompt },
             ],
         });
-        console.log(response, 'response');
-        return response;
+
+        const iconResponse = aiClient.chat.completions.create({
+            max_tokens: 3000,
+            temperature: 0.1,
+            model: 'gpt-4',
+            messages: [
+                {
+                    role: 'system',
+                    content: `
+                    * Lista de palabras: ${Object.keys(iconList).join(', ')}.
+                    Selecciona 5 palabras que:
+                    1. Estén en la anterior lista 
+                    2. Estén relacionadas con lo que pida el usuario.
+                    ES IMPORTANTE QUE SOLO USES LAS PALBRAS DE LA LISTA. TU RESPUESTA SERÁ INVÁLIDA SI USAS CUALQUIER OTRA PALABRA QUE NO ESTÉ EN LA LISTA.
+                    `,
+                },
+                {
+                    role: 'user',
+                    content: `Escuela de programación`,
+                },
+                {
+                    role: 'assistant',
+                    content: `["code","code-2", "file-code-2", "laptop", "computer" ]`,
+                },
+                {
+                    role: 'user',
+                    content: `dentista para niños`,
+                },
+                {
+                    role: 'assistant',
+                    content: `["clipboard-plus","baby", "pill", "stethoscope", "smile" ]`,
+                },
+                {
+                    role: 'user',
+                    content: `escuela de surf`,
+                },
+                {
+                    role: 'assistant',
+                    content: `["waves","fish", "ship-wheel", "wind", "trophy" ]`,
+                },
+                {
+                    role: 'user',
+                    content: `escuela de canto`,
+                },
+                {
+                    role: 'assistant',
+                    content: `["mic-2","music-2", "music-3", "audio-waveform", "speaker" ]`,
+                },
+                {
+                    role: 'user',
+                    content: `coach para vendedores online`,
+                },
+                {
+                    role: 'assistant',
+                    content: `["laptop", "mouse-pointer", "shopping-basket", "shopping-cart", "wallet" ]`,
+                },
+                {
+                    role: 'user',
+                    content: `residencia de ancianos`,
+                },
+                {
+                    role: 'assistant',
+                    content: `["bed-double","wheelchair", "bed-single", "handshake", "person-standing"]`,
+                },
+                {
+                    role: 'user',
+                    content: `${prompt}`,
+                },
+            ],
+        });
+
+        const resolvedPromises = await Promise.all([response, iconResponse]);
+
+        let preset = JSON.parse(
+            resolvedPromises[0].choices[0]?.message?.content!
+        ) as Preset[];
+
+        let icons = JSON.parse(
+            resolvedPromises[1].choices[0]?.message?.content!
+        ) as string[];
+
+        console.log('icons', icons);
+
+        // filter preset for the ones that are in the icon list
+        icons = icons.filter((p) => Object.keys(iconList).includes(p!));
+
+        preset = preset.map((p, i) => {
+            p.icon = icons[i];
+            p.strokeWidth = 2;
+            return p;
+        });
+
+        return preset;
     } catch (error) {
         console.log(error, 'error');
     }

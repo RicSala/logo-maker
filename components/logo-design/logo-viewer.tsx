@@ -10,18 +10,22 @@ import { useContext, useRef } from 'react';
 import { AppContext } from '@/providers/app/app-provider';
 import IconComp from '../icon-comp';
 import { LogoDesign } from './LogoDesign';
+import { Logo } from '@/providers/app/types';
 
 type LogoViewerProps = {
     className?: string;
 };
 
 export function LogoViewer({ className }: LogoViewerProps) {
+    // @ts-ignore
+    const { logoHistory } = useContext(AppContext);
+
     return (
         <div
             className={cn(
                 `
                 bg-slate-100/50 bg-[url('/images/decoration/backgrounds/grid.svg')]
-                flex justify-center items-center
+                flex justify-center items-center relative
                 `,
                 className
             )}
@@ -60,6 +64,7 @@ export const WorkBench = ({ className }: WorkBenchProps) => {
                         hover:border-2
                         hover:border-slate-300
                         flex justify-center items-center
+                        relative
                         '
                             // overflow-hidden
                         >
