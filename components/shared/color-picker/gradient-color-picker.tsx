@@ -9,9 +9,18 @@ import BestGradientColorPicker, {
 } from 'react-best-gradient-color-picker';
 import { SliderWithLabel } from '../slider-with-label';
 
-export function GradientColorPicker({}) {
-    const { logo, setBackgroundColor, setIsGradientBackground } =
-        useContext(AppContext);
+type GradientColorPickerProps = {
+    setColor: (color: string) => void;
+    setIsGradient: (isGradient: boolean) => void;
+    color: string;
+};
+
+export function GradientColorPicker({
+    setColor,
+    setIsGradient,
+    color,
+}: GradientColorPickerProps) {
+    const { logo } = useContext(AppContext);
 
     const {
         setSolid,
@@ -22,13 +31,13 @@ export function GradientColorPicker({}) {
         setRadial,
         degrees,
         setDegrees,
-    } = useColorPicker(logo.backgroundColor, setBackgroundColor);
+    } = useColorPicker(color, setColor);
 
     // REVIEW: CHECK WITH COMEAU. I don't like this pattern of controlling a state with a useEffect and syncing it with another state.
     //  What should be the best way to do this? Should lift the hook to the context? isn't that an overkill?
     useEffect(() => {
-        setIsGradientBackground(isGradient);
-    }, [isGradient, setIsGradientBackground]);
+        setIsGradient(isGradient);
+    }, [isGradient, setIsGradient]);
 
     return (
         <div className='space-y-2'>
@@ -43,25 +52,22 @@ export function GradientColorPicker({}) {
                     id='airplane-mode'
                     checked={isGradient === true}
                     onCheckedChange={(checked: boolean) => {
+                        // @ts-ignore
                         checked ? setGradient() : setSolid();
                     }}
                 />
                 <Label htmlFor='airplane-mode'>Gradiente</Label>
             </div>
             <BestGradientColorPicker
-                value={logo.backgroundColor}
+                width={250}
+                value={color}
                 onChange={(value: string) => {
                     console.log('color picked', value);
-                    setBackgroundColor(value);
+                    setColor(value);
                 }}
-                className={''}
-                hideColorTypeBtns
-                hideGradientStop
-                // hideGradientControls
-                hideAdvancedSliders
-                hideOpacity
-                hideColorGuide
-                height={200}
+                className={`
+                mx-auto
+                `}
             />
             <GradientSettings
                 gradientType={gradientType}
@@ -71,15 +77,8 @@ export function GradientColorPicker({}) {
                 setDegrees={setDegrees}
             />
             <style>{`
-                /*INPUTS*/
-                .rbgcp-input {
-                    background-color: hsl(var(--secondary))!important;
-                    color: hsl(var(--secondary-foreground))!important;
-                }
-
-                .rbgcp-input-label {
-                    color: hsl(var(--secondary-foreground))!important;
-                }
+               
+                
                 `}</style>
         </div>
     );
@@ -128,6 +127,34 @@ const GradientSettings = ({
         </div>
     );
 };
+
+//  /*INPUTS*/
+//  .rbgcp-input {
+//     background-color: hsl(var(--secondary))!important;
+//     color: hsl(var(--secondary-foreground))!important;
+// }
+
+// .rbgcp-input-label {
+//     color: hsl(var(--secondary-foreground))!important;
+// }
+
+// #rbgcp-inputs-wrap {
+//     overflow: hidden;
+// }
+
+// #paintSquare {
+//     max-width: 100%;
+//     border-radius: 0.5rem;
+//     margin: 0 auto;
+// }
+
+// .rbgcp-handle {
+//     width: 1.5rem;
+// }
+
+// #rbgcp-wrapper > div.c-resize.ps-rl > canvas {
+//     width: 100%
+// }
 
 // TODO: Improve styles
 // STYLES - PENDIND

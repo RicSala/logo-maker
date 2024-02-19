@@ -145,7 +145,7 @@ export const AIModal = ({ onClose }: { onClose: () => void }) => {
                             className='h-40 w-40'
                             key={preset.id}
                             onClick={() => {
-                                setNewLogo(applyPreset(preset, logo, 200));
+                                setNewLogo(applyPreset(preset, logo, 80));
                                 onClose();
                             }}
                             status={status}

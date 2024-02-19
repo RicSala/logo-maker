@@ -4,10 +4,7 @@ import { Logo } from '@/providers/app/types';
 import { Nullable, Preset } from '@/types/types';
 
 // Create 5 different presets that look good and different from each other. Colors can include gradients in the format 'linear-gradient(45deg, RGBA(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%)'. They MUST be different from each other!
-export const PRESETS: Preset[] = [
-    // ... [Your previous 5 presets]
-
-    // Preset 6
+export const PRESETS: any[] = [
     {
         id: 'modern-tech',
         name: 'Modern Tech',
@@ -25,8 +22,11 @@ export const PRESETS: Preset[] = [
         size: 25,
         strokeColor: '#003028',
         strokeWidth: 2,
+        fontFamily: 'inter',
+        fontSize: 100,
+        logoTextTranslateX: 0,
+        logoTextTranslateY: 0,
     },
-
     // Preset 7
     {
         id: 'classic-elegance',
@@ -44,8 +44,11 @@ export const PRESETS: Preset[] = [
         size: 25,
         strokeColor: '#f4f4f4',
         strokeWidth: 3,
+        fontFamily: 'inter',
+        fontSize: 100,
+        logoTextTranslateX: 0,
+        logoTextTranslateY: 0,
     },
-
     // Preset 8
     {
         id: 'sunny-side',
@@ -63,8 +66,11 @@ export const PRESETS: Preset[] = [
         size: 25,
         strokeColor: '#b86114',
         strokeWidth: 1,
+        fontFamily: 'inter',
+        fontSize: 100,
+        logoTextTranslateX: 0,
+        logoTextTranslateY: 0,
     },
-
     // Preset 9
     {
         id: 'corporate-bold',
@@ -83,8 +89,11 @@ export const PRESETS: Preset[] = [
         size: 25,
         strokeColor: '#031e2f',
         strokeWidth: 2,
+        fontFamily: 'inter',
+        fontSize: 100,
+        logoTextTranslateX: 0,
+        logoTextTranslateY: 0,
     },
-
     // Preset 10
     {
         id: 'urban-chic',
@@ -102,8 +111,11 @@ export const PRESETS: Preset[] = [
         size: 25,
         strokeColor: '#60ade4',
         strokeWidth: 4,
+        fontFamily: 'inter',
+        fontSize: 100,
+        logoTextTranslateX: 0,
+        logoTextTranslateY: 0,
     },
-
     // Preset 11
     {
         id: 'minimalist-dream',
@@ -121,8 +133,11 @@ export const PRESETS: Preset[] = [
         size: 25,
         strokeColor: '#6a7171',
         strokeWidth: 2,
+        fontFamily: 'inter',
+        fontSize: 100,
+        logoTextTranslateX: 0,
+        logoTextTranslateY: 0,
     },
-
     // Preset 12
     {
         id: 'green-leaf',
@@ -140,8 +155,11 @@ export const PRESETS: Preset[] = [
         size: 25,
         strokeColor: '#2ecc71',
         strokeWidth: 3,
+        fontFamily: 'inter',
+        fontSize: 100,
+        logoTextTranslateX: 0,
+        logoTextTranslateY: 0,
     },
-
     // Preset 13
     {
         id: 'fiery-edge',
@@ -160,8 +178,11 @@ export const PRESETS: Preset[] = [
         size: 25,
         strokeColor: '#c0392b',
         strokeWidth: 1,
+        fontFamily: 'inter',
+        fontSize: 100,
+        logoTextTranslateX: 0,
+        logoTextTranslateY: 0,
     },
-
     // Preset 14
     {
         id: 'cool-waters',
@@ -179,8 +200,11 @@ export const PRESETS: Preset[] = [
         size: 25,
         strokeColor: '#34495e',
         strokeWidth: 4,
+        fontFamily: 'inter',
+        fontSize: 100,
+        logoTextTranslateX: 0,
+        logoTextTranslateY: 0,
     },
-
     // Preset 15
     {
         id: 'eco-modern',
@@ -198,10 +222,14 @@ export const PRESETS: Preset[] = [
         size: 25,
         strokeColor: '#2e4053',
         strokeWidth: 2,
+        fontFamily: 'inter',
+        fontSize: 100,
+        logoTextTranslateX: 0,
+        logoTextTranslateY: 0,
     },
 ];
 
-export const IA_PRESET_EXAMPLES: Preset[] = [
+export const IA_PRESET_EXAMPLES: any[] = [
     {
         id: 'minimalist-dream',
         name: 'Minimalist Dream',
@@ -218,6 +246,10 @@ export const IA_PRESET_EXAMPLES: Preset[] = [
         size: 25,
         strokeColor: '#6a7171',
         strokeWidth: 2,
+        fontFamily: 'inter',
+        fontSize: 100,
+        logoTextTranslateX: 0,
+        logoTextTranslateY: 0,
     },
     {
         id: 'modern-tech',
@@ -236,6 +268,10 @@ export const IA_PRESET_EXAMPLES: Preset[] = [
         size: 25,
         strokeColor: '#003028',
         strokeWidth: 2,
+        fontFamily: 'inter',
+        fontSize: 100,
+        logoTextTranslateX: 0,
+        logoTextTranslateY: 0,
     },
     {
         id: 'sunny-side',
@@ -253,5 +289,9 @@ export const IA_PRESET_EXAMPLES: Preset[] = [
         size: 25,
         strokeColor: '#b86114',
         strokeWidth: 1,
+        fontFamily: 'inter',
+        fontSize: 100,
+        logoTextTranslateX: 0,
+        logoTextTranslateY: 0,
     },
 ];

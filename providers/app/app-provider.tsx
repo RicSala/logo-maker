@@ -13,34 +13,49 @@ import {
     leadingEdgeThrottledFunction,
     updateHistory,
 } from '@/lib/utils';
-import { ContextProps, HistoryState, Logo } from '../app/types';
+import { ContextProps, HistoryState, Logo, Position } from '../app/types';
+import { number } from 'zod';
 
 const INITIAL_LOGO: Logo = {
+    text: 'Company',
     icon: 'chef-hat',
-    size: 200,
+    iconTranslateX: 0,
+    iconTranslateY: 0,
+    size: 80,
     rotation: 15,
     strokeWidth: 2,
     strokeColor: '#ffffff',
     fillColor: '#000000',
     isFilled: false,
     borderRadius: 65,
+    bgRotate: 0,
     backgroundColor:
         'linear-gradient(45deg, RGBA(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%)',
     shadow: '0px 0px 0px 0px rgba(0,0,0,0)',
     isGradientBackground: true,
+    fontSize: 100,
+    fontFamily: 'sofia',
+    logoTextTranslateX: 0,
+    logoTextTranslateY: 0,
+    textTranslateX: 0,
+    textTranslateY: 0,
+    fontWeight: 400,
+    fontColor: '#000000',
+    isGradientFont: false,
 };
 
 const MAX_UNDOS = 10;
 const MAX_REDOS = 10;
 
-// BOILER: export the context in the boilerplate
 export const AppContext = createContext<ContextProps>({
     sidebarOpen: false,
     setSidebarOpen: () => false,
     logo: INITIAL_LOGO,
+    setLogoText: () => '',
     setBackgroundColor: () => '',
     setIconSize: () => 0,
     setIconRotation: () => 45,
+    setBgRotate: () => 0,
     setStrokeWidth: () => 0,
     setStrokeColor: () => '',
     setFillColor: () => '',
@@ -53,6 +68,17 @@ export const AppContext = createContext<ContextProps>({
     undo: () => {},
     redo: () => {},
     setNewLogo: () => {},
+    setFontSize: () => '',
+    setFontFamily: () => '',
+    setLogoTextTranslateX: () => 0,
+    setLogoTextTranslateY: () => 0,
+    setFontWeight: () => 400,
+    setFontColor: () => '',
+    setIsGradientFont: () => false,
+    setIconTranslateX: () => 0,
+    setIconTranslateY: () => 0,
+    setTextTranslateX: () => 0,
+    setTextTranslateY: () => 0,
 });
 
 export default function AppProvider({
@@ -62,14 +88,11 @@ export default function AppProvider({
 }) {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
     // Use useLocalStorage to get the initial state
-    const [logoHistory, originalSetLogoHistory] = useLocalStorage(
-        'logoHistory',
-        {
-            past: [] as Logo[],
-            present: INITIAL_LOGO,
-            future: [] as Logo[],
-        }
-    );
+    const [logoHistory, originalSetLogoHistory] = useLocalStorage('history', {
+        past: [] as Logo[],
+        present: INITIAL_LOGO,
+        future: [] as Logo[],
+    });
 
     const logoRef = useRef<HTMLDivElement>(null);
 
@@ -84,7 +107,7 @@ export default function AppProvider({
     const setLogoHistory = useCallback(
         (newHistory: HistoryState<Logo>, stalePresent: Logo) => {
             // deep copy the logo history
-            console.log('NEW HISTORY FROM SET LOGO HISTORY', newHistory);
+            // console.log('NEW HISTORY FROM SET LOGO HISTORY', newHistory);
             // first we save the logo as usual (We change the present)
             originalSetLogoHistory(newHistory);
 
@@ -113,7 +136,7 @@ export default function AppProvider({
     // Instead of creating a function for each setter, we create a generic function and bind it to property we want to set
     const setProperty = (
         propertyName: keyof Logo,
-        value: string | number | boolean
+        value: string | number | boolean | Position
     ) => {
         const stalePresent = deepCopy(logoHistory.present);
         let newHistory: HistoryState<Logo> = {
@@ -140,6 +163,19 @@ export default function AppProvider({
         'isGradientBackground'
     );
     const setShadow = setProperty.bind(null, 'shadow');
+    const setFontSize = setProperty.bind(null, 'fontSize');
+    const setFontFamily = setProperty.bind(null, 'fontFamily');
+    const setLogoTextTranslateX = setProperty.bind(null, 'logoTextTranslateX');
+    const setLogoTextTranslateY = setProperty.bind(null, 'logoTextTranslateY');
+    const setBgRotate = setProperty.bind(null, 'bgRotate');
+    const setFontWeight = setProperty.bind(null, 'fontWeight');
+    const setFontColor = setProperty.bind(null, 'fontColor');
+    const setIsGradientFont = setProperty.bind(null, 'isGradientFont');
+    const setLogoText = setProperty.bind(null, 'text');
+    const setIconTranslateX = setProperty.bind(null, 'iconTranslateX');
+    const setIconTranslateY = setProperty.bind(null, 'iconTranslateY');
+    const setTextTranslateX = setProperty.bind(null, 'textTranslateX');
+    const setTextTranslateY = setProperty.bind(null, 'textTranslateY');
 
     const undo = () => {
         // deep copy the logo history
@@ -174,10 +210,17 @@ export default function AppProvider({
         <AppContext.Provider
             value={{
                 logo: logoHistory.present,
+                setIconTranslateX,
+                setIconTranslateY,
+                setTextTranslateX,
+                setTextTranslateY,
+
+                setLogoText,
                 sidebarOpen,
                 setSidebarOpen,
                 setIconSize,
                 setIconRotation,
+                setBgRotate,
                 setStrokeWidth,
                 setStrokeColor,
                 setFillColor,
@@ -190,6 +233,13 @@ export default function AppProvider({
                 undo,
                 redo,
                 setNewLogo,
+                setFontSize,
+                setFontFamily,
+                setLogoTextTranslateX,
+                setLogoTextTranslateY,
+                setFontWeight,
+                setFontColor,
+                setIsGradientFont,
 
                 logoRef,
             }}

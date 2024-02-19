@@ -1,7 +1,7 @@
 'use client';
 import { Logo as LogoType } from '@/providers/app/types';
 import { PRESETS } from './presets.const';
-import { Logo } from '../logo';
+import { LogoDesign } from '../logo-design/LogoDesign';
 import IconComp from '../icon-comp';
 import { cn, kebabCaseToCapitlizedCamelCase } from '@/lib/utils';
 import { useContext } from 'react';
@@ -13,11 +13,12 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '../ui/tooltip';
+import { LogoIcon } from '../logo-design/LogoIcon';
 
 export const Presets = ({ maxPresets = 5 }) => {
     return (
         <div className='flex h-full gap-2 items-center'>
-            <p>Presets</p>
+            <p className='hidden md:inline'>Presets</p>
             {PRESETS.map((preset, index) => {
                 return <PresetButton key={preset.id} preset={preset} />;
             })}
@@ -40,7 +41,7 @@ export const PresetButton = ({
     className,
 }: PresetButtonProps) => {
     const { logo, setNewLogo } = useContext(AppContext);
-    const appliedPresetLogo = applyPreset(preset, logo);
+    const appliedPresetLogo = { ...applyPreset(preset, logo), bgRotate: 0 };
     return (
         <TooltipProvider>
             <Tooltip>
@@ -50,10 +51,10 @@ export const PresetButton = ({
                         onClick={() => {
                             onClick
                                 ? onClick()
-                                : setNewLogo(applyPreset(preset, logo, 200));
+                                : setNewLogo(applyPreset(preset, logo, 70));
                         }}
                     >
-                        <Logo logo={appliedPresetLogo} />
+                        <LogoIcon className='w-auto' logo={appliedPresetLogo} />
                     </div>
                 </TooltipTrigger>
                 <TooltipContent className='max-w-md'>

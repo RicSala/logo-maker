@@ -35,7 +35,6 @@ export const kebabCaseToString = (str: string) => {
         .join(' ');
 };
 
-// BOILER: include this in your project
 export const range = (start: number, end: number, step = 1) => {
     let output = [];
 
@@ -116,10 +115,10 @@ export const updateHistory = <T>(
         future: [],
     };
 
-    console.log('upadting history');
-    console.log('history from updateHistory', { history });
-    console.log('stalePresent from updateHistory', { stalePresent });
-    console.log('maxSnapshots from updateHistory', { maxSnapshots });
+    // console.log('upadting history');
+    // console.log('history from updateHistory', { history });
+    // console.log('stalePresent from updateHistory', { stalePresent });
+    // console.log('maxSnapshots from updateHistory', { maxSnapshots });
 
     // create a deep copy of the history, in case it is a state object
     newHistory = deepCopy(history);
@@ -179,7 +178,7 @@ export function leadingEdgeThrottledFunction<T extends (...args: any[]) => any>(
         if (inCooldown) return;
 
         // If not in cooldown, call the function
-        console.log('calling throttled function');
+        // console.log('calling throttled function');
         func(...args);
         // and start the cooldown period (set 'inCooldown' to true)
         inCooldown = true;

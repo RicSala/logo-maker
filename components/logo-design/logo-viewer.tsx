@@ -5,11 +5,11 @@ import {
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-} from './ui/tooltip';
+} from '../ui/tooltip';
 import { useContext, useRef } from 'react';
 import { AppContext } from '@/providers/app/app-provider';
-import IconComp from './icon-comp';
-import { Logo } from './logo';
+import IconComp from '../icon-comp';
+import { LogoDesign } from './LogoDesign';
 
 type LogoViewerProps = {
     className?: string;
@@ -19,7 +19,8 @@ export function LogoViewer({ className }: LogoViewerProps) {
     return (
         <div
             className={cn(
-                `bg-slate-100/50 bg-[url('/images/decoration/backgrounds/grid.svg')]
+                `
+                bg-slate-100/50 bg-[url('/images/decoration/backgrounds/grid.svg')]
                 flex justify-center items-center
                 `,
                 className
@@ -42,18 +43,27 @@ export const WorkBench = ({ className }: WorkBenchProps) => {
         <>
             <TooltipProvider>
                 <Tooltip delayDuration={200}>
-                    <TooltipTrigger>
+                    <TooltipTrigger asChild>
                         <div
                             id='workbench'
-                            className='aspect-square w-[400px] bg-slate-200/30
+                            className='
+                            shrink-0
+                            scale-50
+                            md:scale-[65%]
+                            lg:scale-[none]
+                            w-auto
+                            p-12
+                             bg-slate-200/30
                             border-2
                         hover:border-dashed
                         hover:bg-slate-200/40
                         hover:border-2
                         hover:border-slate-300
-                        flex justify-center items-center'
+                        flex justify-center items-center
+                        '
+                            // overflow-hidden
                         >
-                            <Logo logo={logo} logoRef={logoRef} />
+                            <LogoDesign logo={logo} logoRef={logoRef} />
                         </div>
                     </TooltipTrigger>
                     <TooltipContent>Esta es la zona de descarga</TooltipContent>

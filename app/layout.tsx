@@ -23,7 +23,7 @@ export default function RootLayout({
                 <body className={''}>
                     <Theme
                         attribute='class'
-                        defaultTheme='system'
+                        defaultTheme='light'
                         enableSystem
                         disableTransitionOnChange
                     >

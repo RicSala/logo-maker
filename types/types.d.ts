@@ -79,3 +79,5 @@ type PresetsApiMap = {
         resData: string;
     };
 };
+
+export type TFontNames = keyof typeof fontsMap;

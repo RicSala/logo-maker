@@ -6,9 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Feedback from '@/components/shared/feedback';
 import { AvatarGroup } from '@/components/shared/avatar-group';
 import { Faq } from '@/components/marketing/faq';
-import { Pricing } from '@/components/marketing/pricing';
 import { LogoGrid } from '@/components/marketing/logo-grid';
-import { Features } from '@/components/marketing/features';
 import Laurels from '@/components/marketing/laurels';
 import { Newsletter } from '@/components/marketing/newsletter';
 import CtaWithSocial from '@/components/marketing/cta-with-social';
@@ -39,7 +37,6 @@ export default async function Home() {
                 >
                     Colors
                 </h2>
-                {/* BOILER: Reduce size of color swatches */}
                 <div className='flex gap-2 text-xs'>
                     <div className=' p-3 bg-primary rounded-md text-primary-foreground flex items-center justify-center'>
                         Primary
@@ -85,8 +82,6 @@ export default async function Home() {
             <Faq />
             <Feedback />
             <LogoGrid />
-            <Pricing />
-            <Features />
             <Laurels />
             <Newsletter />
             <CtaWithSocial

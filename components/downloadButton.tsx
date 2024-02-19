@@ -25,12 +25,12 @@ export function DownloadButton({}) {
 
         switch (format) {
             case 'png':
-                dataUrl = toPng(logoRef!.current);
+                dataUrl = toPng(logoRef!.current, {});
                 link.download = `logo.png`;
 
                 break;
             case 'svg':
-                dataUrl = toSvg(logoRef!.current);
+                dataUrl = toSvg(logoRef!.current, {});
                 link.download = `logo.svg`;
                 break;
         }
