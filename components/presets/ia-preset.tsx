@@ -140,12 +140,12 @@ export const AIModal = ({ onClose }: { onClose: () => void }) => {
             </Form>
             {/* GENERATED LOGOS */}
             <Separator />
-            <div className='flex gap-2'>
+            <div className='grid gap-2 grid-cols-3'>
                 {presets.length > 0 ? (
                     presets.map((preset) => (
                         <LogoProposal
                             preset={{ ...preset, size: 60 }}
-                            className='h-40 w-40 drop-shadow-md'
+                            className='h-20 w-20 md:h-40 md:w-40 drop-shadow-md'
                             key={preset.id}
                             onClick={() => {
                                 setNewLogo(applyPreset(preset, logo, 50));
@@ -156,6 +156,9 @@ export const AIModal = ({ onClose }: { onClose: () => void }) => {
                     ))
                 ) : (
                     <>
+                        <LogoProposal status={status} />
+                        <LogoProposal status={status} />
+                        <LogoProposal status={status} />
                         <LogoProposal status={status} />
                         <LogoProposal status={status} />
                         <LogoProposal status={status} />

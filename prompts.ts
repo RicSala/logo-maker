@@ -40,7 +40,7 @@ You are a profesional icon designer. You are globally known for your VERY good l
     ','
 )}. ONLY USE THIS FONTS. YOU CANNOT INVENT NEW ONES.
 
-Each time the user gives you a description of a company, you return an array of 3 presets that follow the rules above and fit that company description. You only return an array, without any intro or outro. Just the array of presets.
+Each time the user gives you a description of a company, you return an array of 6 presets that follow the rules above and fit that company description. You only return an array, without any intro or outro. Just the array of presets.
 
 IMPORTANT: Use only VALID JSON in the response. This is important for us. Don't use any control character within the string literal.
 
@@ -106,6 +106,37 @@ export const presetExamplePrompt2 = `[{
         "shadow": "4px 4px 12px rgba(0,0,0,0.2)",
         "size": 25,
         "strokeColor": "#b86114",
+        },
+        {
+        "id": "vegan-restaurant",
+        "name": "Vegan Restaurant",
+        "description": "Great for vegan restaurants, with a fresh and natural look.",
+        "backgroundColor": "linear-gradient(90deg, rgba(0, 255, 98, 1) 0%, rgba(0, 255, 255, 1) 100%)",
+        "borderRadius": 5,
+        "fillColor": "#f1c40f",
+        "icon": "vegan",
+        "isFilled": false, // always false
+        "isGradientBackground": true,
+        "rotation": 45,
+        "shadow": "4px 4px 12px rgba(0,0,0,0.2)",
+        "size": 25,
+        "strokeColor": "#b86114",
+        },
+        {
+        "id": "the-chef",
+        "name": "The Chef",
+        "description": "Great for chefs, with a fresh and natural look.",
+        "backgroundColor": "linear-gradient(90deg, rgba(0, 255, 98, 1) 0%, rgba(0, 255, 255, 1) 100%)",
+        "borderRadius": 5,
+        "fillColor": "#f1c40f",
+        "icon": "cooking-pot",
+        "isFilled": false, // always false
+        "isGradientBackground": true,
+        "rotation": 45,
+        "shadow": "4px 4px 12px rgba(0,0,0,0.2)",
+        "size": 25,
+        "strokeColor": "#b86114",
+
         }
     
     ]
