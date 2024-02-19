@@ -96,6 +96,9 @@ export const AIModal = ({ onClose }: { onClose: () => void }) => {
 
     const form = useForm({
         resolver: zodResolver(CompanyDescriptionSchema),
+        defaultValues: {
+            description: '',
+        },
     });
 
     const buttonLabel = status === 'loading' ? 'Generando...' : 'Generar Logos';
@@ -145,7 +148,7 @@ export const AIModal = ({ onClose }: { onClose: () => void }) => {
                             className='h-40 w-40'
                             key={preset.id}
                             onClick={() => {
-                                setNewLogo(applyPreset(preset, logo, 80));
+                                setNewLogo(applyPreset(preset, logo, 50));
                                 onClose();
                             }}
                             status={status}

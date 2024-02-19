@@ -12,7 +12,7 @@ import {
     DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 
-type ImageFormat = 'png' | 'svg';
+type ImageFormat = 'png';
 
 export function DownloadButton({}) {
     const { logoRef } = useContext(AppContext);
@@ -29,10 +29,6 @@ export function DownloadButton({}) {
                 link.download = `logo.png`;
 
                 break;
-            case 'svg':
-                dataUrl = toSvg(logoRef!.current, {});
-                link.download = `logo.svg`;
-                break;
         }
         link.href = await dataUrl;
         document.body.appendChild(link);
@@ -48,13 +44,6 @@ export function DownloadButton({}) {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-                <DropdownMenuItem
-                    onClick={() => {
-                        onDownload('svg');
-                    }}
-                >
-                    SVG
-                </DropdownMenuItem>
                 <DropdownMenuItem
                     onClick={() => {
                         onDownload('png');

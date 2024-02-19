@@ -53,7 +53,7 @@ export function GradientColorPicker({
                     checked={isGradient === true}
                     onCheckedChange={(checked: boolean) => {
                         // @ts-ignore
-                        checked ? setGradient() : setSolid();
+                        checked ? setGradient() : setSolid('#000000');
                     }}
                 />
                 <Label htmlFor='airplane-mode'>Gradiente</Label>

@@ -15,7 +15,7 @@ export default function Header() {
     return (
         <header className='sticky top-0 bg-white dark:bg-[#182235] border-b border-slate-200 dark:border-slate-700 z-30'>
             <div className='px-2 sm:px-6 lg:px-8'>
-                <div className='flex items-center justify-between p-2 -mb-px lg:flex-nowrap flex-wrap'>
+                <div className='flex items-center justify-between p-2 -mb-px flex-col gap-2  lg:flex-row'>
                     {/* Header: Left side */}
                     {/* Hamburger button */}
                     <div className='flex gap-2 w-full lg:w-auto'>

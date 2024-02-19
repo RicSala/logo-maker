@@ -50,6 +50,8 @@ export function TextSettings({}) {
                 label='Tamaño de letra'
                 value={logo.fontSize}
                 onChange={setFontSize}
+                min={10}
+                max={150}
             />
             <SliderWithLabel
                 key={'translateX'}

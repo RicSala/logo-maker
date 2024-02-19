@@ -25,8 +25,9 @@ export function BackgroundSettings({}) {
                 label='Rotar fondo'
                 value={logo.bgRotate}
                 onChange={setBgRotate}
+                step={15}
                 min={0}
-                max={100}
+                max={360}
             />
             <SliderWithLabel
                 key={'rounded'}

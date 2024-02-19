@@ -34,13 +34,13 @@ const INITIAL_LOGO: Logo = {
     shadow: '0px 0px 0px 0px rgba(0,0,0,0)',
     isGradientBackground: true,
     fontSize: 100,
-    fontFamily: 'sofia',
+    fontFamily: 'bricolage',
     logoTextTranslateX: 0,
     logoTextTranslateY: 0,
     textTranslateX: 0,
     textTranslateY: 0,
     fontWeight: 400,
-    fontColor: '#000000',
+    fontColor: '#333333',
     isGradientFont: false,
 };
 
