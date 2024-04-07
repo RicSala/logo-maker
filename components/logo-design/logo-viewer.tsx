@@ -56,7 +56,6 @@ export const WorkBench = ({ className }: WorkBenchProps) => {
                             md:scale-[65%]
                             lg:scale-[none]
                             w-auto
-                            p-8
                              bg-slate-200/30
                             border-2
                         hover:border-dashed
